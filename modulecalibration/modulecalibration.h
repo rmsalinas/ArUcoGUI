@@ -1,5 +1,5 @@
-#ifndef MODULEEXAMPLE_MODULE_H
-#define MODULEEXAMPLE_MODULE_H
+#ifndef ModuleCalibration_MODULE_H
+#define ModuleCalibration_MODULE_H
 
 
 
@@ -9,13 +9,15 @@
 #include <memory>
 #include "moduletools/appmodule.h"
 #include "gparam/paramsetwdgt.h"
+#include "videoplayer.h"
+
 #include <iostream>
 class Gauss_Thread;
-class   ModuleExample: public AppModule {
+class   ModuleCalibration: public AppModule {
     Q_OBJECT
 public:
-    ModuleExample();
-    std::string getName() const {return "ModuleExample";}
+    ModuleCalibration();
+    std::string getName() const {return "Calibration";}
     std::string getToolBoxTitle() const {return "Example";}
 
 
@@ -32,8 +34,7 @@ private slots:
 signals:
     void mesh_generated(std::string);
 private:
-    QLabel *_labelImage=0;
-    QToolBox *_tbox=0;
+     QToolBox *_tbox=0;
     QToolBar *_tbar=0;
     gparam::ParamSet gauss_params;
     QAction *reset_action;
@@ -42,6 +43,7 @@ private:
     void readParamSet();
 
 
+    VideoPlayer *vplayer=0;
 };
 
 class Gauss_Thread : public QThread{

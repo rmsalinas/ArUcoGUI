@@ -4,7 +4,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
 
 
-project(qtproject VERSION "1.0.1" LANGUAGES CXX)
+project(ArUcoGUI VERSION "0.0.1" LANGUAGES CXX)
 set(PROJECT_SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
@@ -37,8 +37,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5Widgets REQUIRED)
-#  find_package(Qt5Network REQUIRED)
-
+find_package(Qt5Multimedia REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(aruco REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
 #################################
 # Add modules
 #################################
@@ -47,8 +49,8 @@ include_directories(. ./tools)
 SET(BUILD_QT ON)
 add_subdirectory(tools/gparam)
 add_subdirectory(tools/moduletools)
-add_subdirectory(moduleexample)
-SET(USED_MODULES  moduleexample moduletools gparam gparam_qt )
+add_subdirectory(modulecalibration)
+SET(USED_MODULES  modulecalibration moduletools gparam gparam_qt )
 
 
 #   add_subdirectory(qtgl)
@@ -70,8 +72,8 @@ QT5_WRAP_UI(qtproject_UIS_HDRS ${qtproject_UIS} )
 qt5_add_resources(qtproject_RCC appresources.qrc)
 
 add_executable(${PROJECT_NAME}  ${qtproject_UIS_HDRS} ${qtproject_SRCS}  ${qtproject_RCC} ${qtproject_HDRS} ${qtproject_UIS_HDRS})
-qt5_use_modules(${PROJECT_NAME}  Widgets)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}   ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} ${USED_MODULES})
+qt5_use_modules(${PROJECT_NAME}  Widgets  )
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}   ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} ${USED_MODULES} aruco opencv_core opencv_imgproc)
 INSTALL(TARGETS ${PROJECT_NAME}  RUNTIME DESTINATION bin)
 
 

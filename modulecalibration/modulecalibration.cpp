@@ -1,15 +1,13 @@
 #include <QSplitter>
-#include "moduleexample.h"
+#include "modulecalibration.h"
 #include "moduletools/appparams.h"
 #include <iostream>
 
 using namespace std;
-ModuleExample::ModuleExample() {
-    _labelImage=new QLabel(0);
-    _labelImage->setScaledContents(true);
-    _labelImage->setPixmap(QPixmap ( QString:: fromUtf8 ( ":/images/cityoflove.jpg" ) ));
+ModuleCalibration::ModuleCalibration() {
 
 
+    vplayer=new VideoPlayer();
     _tbar=new QToolBar ( getName().c_str() );
     reset_action= new QAction ( QIcon ( ":/images/reset.png" ), tr ( "&Reset..." ), this );
     connect(reset_action,SIGNAL(triggered()),this,SLOT(on_reset_action( )));
@@ -28,35 +26,38 @@ ModuleExample::ModuleExample() {
 
 
     //register the elements created
-    setCentralWidget(_labelImage);
+    setCentralWidget(vplayer);
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/module-3d.png" ) ));
     setToolBar(_tbar);
     setControlPanel(_tbox);
 
 }
-void ModuleExample::on_reset_action(){
+void ModuleCalibration::on_reset_action(){
 
 }
-void ModuleExample::onGauss(){
+void ModuleCalibration::onGauss(){
 
+    VideoPlayer *vp=new VideoPlayer();
+    vp->show();
+    return;
     AppParams::saveToSettings(gauss_params);//save the current params
 
     if(_gauss_thread) return;//already running
     _gauss_thread=std::make_shared<Gauss_Thread>( gauss_params);
 
-    QObject::connect(_gauss_thread.get(), &Gauss_Thread::finished,this, &ModuleExample::on_gauss_thread_finished);
-    QObject::connect(_gauss_thread.get(),&Gauss_Thread::notify_action_progress,this,&ModuleExample::notify_action_progress);
+    QObject::connect(_gauss_thread.get(), &Gauss_Thread::finished,this, &ModuleCalibration::on_gauss_thread_finished);
+    QObject::connect(_gauss_thread.get(),&Gauss_Thread::notify_action_progress,this,&ModuleCalibration::notify_action_progress);
     _gauss_thread->start();
     gparam::ParamSet pset("onGauss");
     pset.push_back(gparam::Param("test",int(1)));
     emit global_action(pset);
 
 }
-void ModuleExample::on_gauss_thread_finished(){
+void ModuleCalibration::on_gauss_thread_finished(){
 _gauss_thread=nullptr;
 }
 
-void ModuleExample::readParamSet(){
+void ModuleCalibration::readParamSet(){
 
 
 
@@ -74,21 +75,21 @@ void ModuleExample::readParamSet(){
 
 
 }
-void ModuleExample::onParamsOkPressed(){
+void ModuleCalibration::onParamsOkPressed(){
 
 }
 
-void ModuleExample::on_activate (  ) {
+void ModuleCalibration::on_activate (  ) {
     getControlPanel()->show();
     getToolBar()->show();
 
 }
 
 
-void ModuleExample::on_deactivate (  ){
+void ModuleCalibration::on_deactivate (  ){
 
 }
 
 
-void ModuleExample::on_globalaction(const gparam::ParamSet &paramset){
+void ModuleCalibration::on_globalaction(const gparam::ParamSet &paramset){
 }
