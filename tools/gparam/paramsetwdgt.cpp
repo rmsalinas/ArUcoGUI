@@ -76,7 +76,7 @@ ParamSetWdgt::~ParamSetWdgt()
 
 void ParamSetWdgt::setParamSet ( gparam::ParamSet *paramSet )
 {
-  cout<<"Paramset ="<<paramSet->getPrintString()<<endl;
+ // cout<<"Paramset ="<<paramSet->getPrintString()<<endl;
     _paramSet =  paramSet;
     setWindowTitle ( paramSet->getName().c_str() );
     for ( size_t i=0; i<_paramSet->size(); i++ )
@@ -242,7 +242,7 @@ void ParamSetWdgt::addString ( gparam::Param strParam )
 
 void ParamSetWdgt::addStringList ( gparam::Param strlistParam )
 {
-  cout<<"ADD STRLIST="<<strlistParam<<endl;
+  //cout<<"ADD STRLIST="<<strlistParam<<endl;
     QComboBox* comboBox = new QComboBox();
     for ( size_t i=0; i<strlistParam.getStringList().size(); i++ )
         comboBox->addItem ( QString::fromStdString ( strlistParam.getStringList() [i] ) );

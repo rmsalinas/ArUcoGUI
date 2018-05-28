@@ -139,11 +139,13 @@ Param::Param ( std::string name,int val,int minv,int maxv,int stepInc ) throw ( 
     _stepIncrement=stepInc;
 
 }
-Param::Param (std::string name, const std::vector<string> &strlist ) throw ( gparam::Exception ){
+Param::Param (std::string name, const std::vector<string> &strlist , int defaultElementList) throw ( gparam::Exception ){
      initValues();
      _name=name;
      _strlist=strlist;
      _type=STRINGLIST ;
+     if (defaultElementList>=0 && defaultElementList<int(_strlist.size()))
+         _value=_strlist[defaultElementList];
 
 }
 

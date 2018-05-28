@@ -114,7 +114,10 @@ void VideoPlayer::nextFrame(){
         videoReader.retrieve(imIn);
         m_positionSlider->setValue(videoReader.get(CV_CAP_PROP_POS_FRAMES));
         setImage(imIn);
-        if (isPlaying) QTimer::singleShot(20,this,SLOT(nextFrame()));
+        if (isPlaying) {
+            double fps=videoReader.get(CV_CAP_PROP_FPS);
+            QTimer::singleShot((1000./fps)-2,this,SLOT(nextFrame()));
+        }
     }
     else{
         isPlaying=0;

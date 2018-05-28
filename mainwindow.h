@@ -3,7 +3,6 @@
 #include "moduletools/modulesetmainwindow.h"
 
 
-
 class MainWindow : public ModuleSetMainWindow {
     Q_OBJECT
 
@@ -12,7 +11,12 @@ public:
 
 public slots:
     void on_global_action(const gparam::ParamSet &paramset);
-
+    void on_ArucoParamsChanged();
+    void on_arucoParamsShowAction_triggered();
+private :
+    QAction *arucoParamsShowAction;
+    QToolBar *_tbar;
+    QDockWidget *_arucoDock;
 
 };
 

@@ -78,7 +78,7 @@ class APP_MODULESET_TOOLS_API AppParams {
 
   static  void  saveToSettings ( gparam::ParamSet &obj, std::string baseName="" ) ;
 
-  static  bool   readFromSettings ( gparam::ParamSet &obj, std::string baseName="" );
+  static  bool   readFromSettings (gparam::ParamSet &obj, std::string baseName="" , bool forceWriteFirstTime=true);
 
 };
 

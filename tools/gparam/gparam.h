@@ -39,7 +39,7 @@ public:
     Param ( std::string name ,ParamType pt ) throw ( gparam::Exception );
     Param ( std::string name ) throw ( gparam::Exception );
     explicit Param ( std::string name, std::string val ) throw ( gparam::Exception );
-    explicit Param ( std::string name,const std::vector<std::string> &strlist ) throw ( gparam::Exception );
+    explicit Param ( std::string name,const std::vector<std::string> &strlist , int defaultElementList=-1) throw ( gparam::Exception );
     explicit Param ( std::string name, char* val ) throw ( gparam::Exception );
     explicit Param ( std::string name, int val ,int min=0,int max=0,int stepInc=0 ) throw ( gparam::Exception );
     explicit Param ( std::string name, double val ,double min=0,double max=0,double stepInc=0 ) throw ( gparam::Exception );

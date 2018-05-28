@@ -60,8 +60,8 @@ void ModuleSetMainWindow::addModule ( std::string name, std::shared_ptr<AppModul
         module->getControlPanel()->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
         //        module->getControlPanel()->set
-        module->getControlPanel() ->adjustSize();
-        module->getControlPanel() ->setMinimumWidth ( 250 );
+       module->getControlPanel() ->setMinimumWidth ( 150 );
+       module->getControlPanel() ->adjustSize();
     }
 
 
