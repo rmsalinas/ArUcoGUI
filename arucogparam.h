@@ -2,6 +2,7 @@
 #define ARUCOGPARAM_H
 #include "gparam/gparam.h"
 #include "aruco.h"
+#include <iostream>
 class ArucoGParams: public gparam::ParamSet {
 public:
     ArucoGParams(){
@@ -40,9 +41,9 @@ class ArucoMarkerDetector{
 
 
 public:
-    static aruco::MarkerDetector & get(){
+    static aruco::MarkerDetector & get(bool updateParams=true){
             static aruco::MarkerDetector mdetector;
-            ArucoGParams::loadFromParams(mdetector);
+            if (updateParams) ArucoGParams::loadFromParams(mdetector);
             return mdetector;
     }
 };

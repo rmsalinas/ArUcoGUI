@@ -56,5 +56,6 @@
         <file>images/scan-time.png</file>
         <file>images/cityoflove.jpg</file>
         <file>images/aruco_params.png</file>
+        <file>images/blackwhite.png</file>
     </qresource>
 </RCC>

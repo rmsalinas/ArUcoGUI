@@ -8,7 +8,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <cstring>
-namespace modulecalibration{
+namespace modulearucotest {
 
 VideoPlayer::VideoPlayer(QWidget *parent)
     : QWidget(parent)
@@ -31,11 +31,6 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     connect(m_playButton, &QAbstractButton::clicked,this, &VideoPlayer::playPauseButtonClicked);
 
-    m_plusButton= new QPushButton;
-    m_plusButton->setEnabled(false);
-    m_plusButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/plus.png" )));
-
-    connect(m_plusButton, &QAbstractButton::clicked,this, &VideoPlayer::addCurrentImage);
 
 
     m_positionSlider = new QSlider(Qt::Horizontal);
@@ -51,7 +46,8 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     controlLayout->addWidget(openButton);
     controlLayout->addWidget(m_playButton);
     controlLayout->addWidget(m_positionSlider);
-    controlLayout->addWidget(m_plusButton);
+    m_playButton->hide();
+    m_positionSlider->hide();
 
     QBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(imgLabel);
@@ -74,7 +70,7 @@ void VideoPlayer::openFile()
                             this,
                             tr ( "Select an input file" ),
                             settings.value ( "currDir" ).toString(),
-                            tr ( "Open Movie (*.*)" ) );
+                            tr ( "Open Movie or Image (*.*)" ) );
       if ( file!=QString() ) {
           settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
 
@@ -84,13 +80,18 @@ void VideoPlayer::openFile()
             return;
         }
 
-        std::cerr<<"Opened successfully\n";
-
         m_positionSlider->setRange(0, videoReader.get(CV_CAP_PROP_FRAME_COUNT));
+        if (videoReader.get(CV_CAP_PROP_FRAME_COUNT)>1){
+            m_playButton->show();
+            m_positionSlider->show();
+        }
+        else{
+            m_playButton->hide();
+            m_positionSlider->hide();
+        }
         m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
         m_playButton->setEnabled(true);
-        m_plusButton->setEnabled(true);
-        isPlaying=0;
+         isPlaying=0;
         setPosition(0);
      }
 }
@@ -116,6 +117,7 @@ void VideoPlayer::nextFrame(){
     if (videoReader.grab()){
         videoReader.retrieve(imIn);
         m_positionSlider->setValue(videoReader.get(CV_CAP_PROP_POS_FRAMES));
+        emit newImage(imIn);
         setImage(imIn);
         if (isPlaying) {
             double fps=videoReader.get(CV_CAP_PROP_FPS);
@@ -139,16 +141,17 @@ void VideoPlayer::setPosition(int position)
     videoReader.set(CV_CAP_PROP_POS_FRAMES,position);
     videoReader.grab();
     videoReader.retrieve(imIn);
+    emit newImage(imIn);
     setImage(imIn);
 }
 
 void VideoPlayer::setImage(  cv::Mat &img2Show){
-    emit newImage(img2Show);
+
 
     QImage _qimgR ( ( const uchar * ) ( img2Show.ptr<uchar> ( 0 ) ),
                     img2Show.cols,img2Show.rows, QImage::Format_RGB888 ) ;
 
     imgLabel-> setPixmap ( QPixmap::fromImage ( _qimgR.rgbSwapped() ) );
 }
-}
 
+}

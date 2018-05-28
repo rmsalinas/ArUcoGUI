@@ -50,7 +50,8 @@ SET(BUILD_QT ON)
 add_subdirectory(tools/gparam)
 add_subdirectory(tools/moduletools)
 add_subdirectory(modulecalibration)
-SET(USED_MODULES  modulecalibration moduletools gparam gparam_qt )
+add_subdirectory(modulearucotest)
+SET(USED_MODULES  modulecalibration modulearucotest moduletools gparam gparam_qt )
 
 
 #   add_subdirectory(qtgl)

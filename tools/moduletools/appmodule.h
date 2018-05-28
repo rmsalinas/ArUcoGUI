@@ -22,9 +22,6 @@ public:
     virtual std::string getName() const=0;
     virtual std::string getToolBoxTitle() const=0; //{return "";}
 
-
-
-
     template<typename T> T* getControlPanel_() {
         return dynamic_cast<T*> ( getControlPanel()->widget() );
     }
@@ -45,6 +42,9 @@ public slots:
     //call to activate
     void activate() {
         _isActive=true;
+        if ( getToolBar() !=0 ) getToolBar()->show();
+        if ( getControlPanel() !=0 ) getControlPanel()->show();
+
         on_activate();
         emit activated();
     }

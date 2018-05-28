@@ -7,7 +7,7 @@ using namespace std;
 ModuleCalibration::ModuleCalibration() {
 
 
-    vplayer=new VideoPlayer();
+    vplayer=new modulecalibration::VideoPlayer();
     connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
     _tbar=new QToolBar ( getName().c_str() );
     reset_action= new QAction ( QIcon ( ":/images/reset.png" ), tr ( "&Reset..." ), this );
@@ -39,7 +39,7 @@ void ModuleCalibration::on_reset_action(){
 }
 void ModuleCalibration::onGauss(){
 
-    VideoPlayer *vp=new VideoPlayer();
+    modulecalibration::VideoPlayer *vp=new modulecalibration::VideoPlayer();
     vp->show();
     return;
     AppParams::saveToSettings(gauss_params);//save the current params
@@ -56,7 +56,7 @@ void ModuleCalibration::onGauss(){
 
 }
 void ModuleCalibration::on_gauss_thread_finished(){
-_gauss_thread=nullptr;
+    _gauss_thread=nullptr;
 }
 
 void ModuleCalibration::readParamSet(){
@@ -82,8 +82,8 @@ void ModuleCalibration::onParamsOkPressed(){
 }
 
 void ModuleCalibration::on_activate (  ) {
-    getControlPanel()->show();
-    getToolBar()->show();
+//    getControlPanel()->show();
+//    getToolBar()->show();
 
 }
 

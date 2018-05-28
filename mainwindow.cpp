@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "arucogparam.h"
 #include <iostream>
+#include "modulearucotest/modulearucotest.h"
 #include "modulecalibration/modulecalibration.h"
 #include "moduletools/appparams.h"
+
 
 using namespace std;
 
@@ -19,6 +21,8 @@ ModuleSetMainWindow ( parent )  {
         _tbar=new QToolBar (  "Main Toolbar" );
 
         arucoParamsShowAction=new QAction ( QIcon ( ":/images/aruco_params.png" ), tr ( "&Aruco Params" ), this );
+        arucoParamsShowAction->setCheckable(true);
+        arucoParamsShowAction->setChecked(true);
         connect(arucoParamsShowAction,SIGNAL(triggered()),this,SLOT(on_arucoParamsShowAction_triggered( )));
         _tbar->addAction(arucoParamsShowAction);
         addToolBar ( _tbar);
@@ -34,8 +38,9 @@ ModuleSetMainWindow ( parent )  {
 
 
         //ADD MODULES
-        addModule ( "Calibration", std::make_shared< ModuleCalibration> () );
-        activateModule("Calibration");
+        addModule ( "ArucoTest", std::make_shared< ModuleArucoTest> () );
+         addModule ( "Calibration", std::make_shared< ModuleCalibration> () );
+        activateModule("ArucoTest");
     } catch ( std::exception &ex ) {
         cerr<<ex.what() <<endl;
     }
@@ -54,7 +59,7 @@ void MainWindow::on_ArucoParamsChanged(){
 
 }
 void MainWindow::on_arucoParamsShowAction_triggered(){
-    if (_arucoDock->isVisible())
+    if(!arucoParamsShowAction->isChecked())
         _arucoDock->hide();
     else _arucoDock->show();
 }

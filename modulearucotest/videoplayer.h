@@ -1,6 +1,6 @@
 
-#ifndef modulecalibration_VIDEOPLAYER_H
-#define modulecalibration_VIDEOPLAYER_H
+#ifndef modulearucotest_VIDEOPLAYER_H
+#define modulearucotest_VIDEOPLAYER_H
 
 #include <QWidget>
 #include <QMediaPlayer>
@@ -12,7 +12,8 @@ class QAbstractButton;
 class QSlider;
 class QLabel;
 class QUrl;
-namespace modulecalibration{
+namespace modulearucotest {
+
 class VideoPlayer : public QWidget
 {
     Q_OBJECT
@@ -24,18 +25,18 @@ public:
     cv::Mat getLastImageSelected();
 public slots:
     void openFile();
+    void setImage(  cv::Mat &img2Show);
 
 private slots:
     void playPauseButtonClicked( );
     void setPosition(int position);
-    void setImage(  cv::Mat &img2Show);
     void nextFrame();
     void addCurrentImage();
 signals:
     void imageSelected();
     void newImage(cv::Mat &);
 private:
-    QAbstractButton *m_playButton,*m_plusButton;
+    QAbstractButton *m_playButton;
     QSlider *m_positionSlider;
     QLabel *m_errorLabel;
     cv::Mat imIn,selectedImage;
@@ -44,4 +45,5 @@ private:
     int isPlaying=0;
 };
 }
+
 #endif
