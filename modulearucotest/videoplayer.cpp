@@ -104,6 +104,10 @@ void VideoPlayer::openFile()
 
 
 
+int VideoPlayer::getFramePos(){
+    if (!videoReader.isOpened() )return -1;
+    else return videoReader.get(CV_CAP_PROP_POS_FRAMES);
+}
 
 
 void VideoPlayer::playPauseButtonClicked()

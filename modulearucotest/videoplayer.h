@@ -20,6 +20,7 @@ public:
 
 
     cv::Mat getLastImageSelected();
+    int getFramePos();
 public slots:
     void openFile();
     void setImage(  cv::Mat &img2Show);

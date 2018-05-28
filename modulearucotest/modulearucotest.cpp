@@ -23,13 +23,15 @@ ModuleArucoTest::ModuleArucoTest() {
     //create a panel showing the detections
     QWidget *controlPanel=new QWidget;
 
-    auto *detectionsLabel=new QPlainTextEdit;
-   // detectionsLabel->setText("LJ");
+     detectionsLabel=new QPlainTextEdit;
+     detectionsLabel->setWordWrapMode(QTextOption::NoWrap);
 
     QAbstractButton *saveButton = new QPushButton(tr("Save..."));
     saveButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/save.png" )));
+    connect(saveButton,SIGNAL(clicked(bool)),this,SLOT(on_saveDetections()));
     QAbstractButton *clearButton = new QPushButton(tr("Clear..."));
     clearButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/reset.png" )));
+    connect(clearButton,SIGNAL(clicked(bool)),this,SLOT(on_clearDetections()));
 //    connect(openButton, &QAbstractButton::clicked, this, &VideoPlayer::saveDetections);
 
 
@@ -52,6 +54,12 @@ ModuleArucoTest::ModuleArucoTest() {
 
 }
 
+void ModuleArucoTest::on_clearDetections(){
+    detectionsLabel->clear();
+}
+void ModuleArucoTest::on_saveDetections(){
+
+}
 
 
 void ModuleArucoTest::on_global_action(const gparam::ParamSet &paramset){
@@ -69,6 +77,7 @@ void ModuleArucoTest::redraw(){
     cv::Mat im2;
     currImage.copyTo(im2);
     auto markers=ArucoMarkerDetector::get().detect(currImage);
+    printDetectionsText(markers);
     cv::Mat im2show;
     if (act_ShowThresImage->isChecked()){
         getThresholdedImage(im2show);
@@ -80,12 +89,27 @@ void ModuleArucoTest::redraw(){
     vplayer->setImage(im2show);
 }
 
+void ModuleArucoTest::printDetectionsText(const std::vector<aruco::Marker> &markers){
+QString text;
+text.setNum( vplayer->getFramePos());
+text+=" ";
+        for(const auto &m:markers){
+            std::stringstream str;
+            str<<m;
+            text+=str.str().c_str();
+            text+=" ";
+    }
+        text+="\n";
+        detectionsLabel->insertPlainText(text);
+}
+
 void ModuleArucoTest::on_act_ShowThresImage_triggered(){
     redraw();
 }
 void ModuleArucoTest::on_newVideoImage(cv::Mat &im){
     im.copyTo(currImage);
     auto markers=ArucoMarkerDetector::get().detect(currImage);
+    printDetectionsText(markers);
     if (!act_ShowThresImage->isChecked()){
         for(auto m:markers) m.draw(im);
     }

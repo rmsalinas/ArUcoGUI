@@ -6,6 +6,7 @@
 #include <QToolBox>
 #include <QWidget>
 #include <QThread>
+#include <QPlainTextEdit>
 #include <memory>
 #include "moduletools/appmodule.h"
 #include "gparam/paramsetwdgt.h"
@@ -29,12 +30,15 @@ public slots:
 private slots:
       void on_newVideoImage(cv::Mat &im);
       void on_act_ShowThresImage_triggered();
+      void on_clearDetections();
+      void on_saveDetections();
       void redraw();
 signals:
     void mesh_generated(std::string);
 private:
 
 
+    QPlainTextEdit *detectionsLabel;
     QAction *act_ShowThresImage;
     modulearucotest::VideoPlayer *vplayer=0;
     aruco::MarkerDetector _arucoMDetector;
@@ -43,6 +47,7 @@ private:
 
 
     void  getThresholdedImage(cv::Mat &TCopy);
+    void printDetectionsText(const std::vector<aruco::Marker> &markers);
 
 };
 
