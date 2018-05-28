@@ -12,9 +12,10 @@
 #include "videoplayer.h"
 #include "aruco/aruco.h"
 #include <QAction>
+#include "modulearucotest_exports.h"
 
 #include <iostream>
-class   ModuleArucoTest: public AppModule {
+class APP_MODULE_ARUCOTEST_TOOLS_API  ModuleArucoTest: public AppModule {
     Q_OBJECT
 public:
     ModuleArucoTest();

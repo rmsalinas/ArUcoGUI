@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
 
 
 
-    std::setlocale(LC_ALL, "spanish");
-    std::cout << std::locale().name() << std::endl;
+   // std::setlocale(LC_ALL, "spanish");
+   // std::cout << std::locale().name() << std::endl;
 
        CmdLineParser cml(argc,argv);
 

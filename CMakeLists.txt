@@ -54,7 +54,7 @@ add_subdirectory(tools/gparam)
 add_subdirectory(tools/moduletools)
 add_subdirectory(modulecalibration)
 add_subdirectory(modulearucotest)
-SET(USED_MODULES  modulecalibration modulearucotest moduletools gparam gparam_qt )
+SET(USED_MODULES  modulecalibration modulearucotest  )
 
 
 #   add_subdirectory(qtgl)
@@ -77,7 +77,7 @@ qt5_add_resources(qtproject_RCC appresources.qrc)
 
 add_executable(${PROJECT_NAME}  ${qtproject_UIS_HDRS} ${qtproject_SRCS}  ${qtproject_RCC} ${qtproject_HDRS} ${qtproject_UIS_HDRS})
 qt5_use_modules(${PROJECT_NAME}  Widgets  )
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}   ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} ${USED_MODULES} aruco opencv_core opencv_imgproc)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}   ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} ${USED_MODULES}  opencv_core opencv_imgproc aruco moduletools gparam gparam_qt  )
 INSTALL(TARGETS ${PROJECT_NAME}  RUNTIME DESTINATION bin)
 
 

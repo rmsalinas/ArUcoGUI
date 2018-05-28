@@ -3,7 +3,6 @@
 #define modulearucotest_VIDEOPLAYER_H
 
 #include <QWidget>
-#include <QMediaPlayer>
 #include <QVideoFrame>
 #include <QVideoProbe>
 #include <opencv2/core.hpp>

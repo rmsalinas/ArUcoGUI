@@ -28,27 +28,27 @@ or implied, of Rafael Muñoz Salinas.
  
 
 
-#ifndef __APP_MODULESET_TOOLS_API_CORE_TYPES_H__
-#define __APP_MODULESET_TOOLS_API_CORE_TYPES_H__
+#ifndef __APP_MODULE_ARUCOTEST_API_CORE_TYPES_H__
+#define __APP_MODULE_ARUCOTEST_API_CORE_TYPES_H__
  
 #if !defined _CRT_SECURE_NO_DEPRECATE && _MSC_VER > 1300
 #define _CRT_SECURE_NO_DEPRECATE /* to avoid multiple Visual Studio 2005 warnings */
 #endif
 
 #if (defined WIN32 || defined _WIN32 || defined WINCE)
-    #if ( defined APP_MODULETOOLS_DSO_EXPORTS)
-      #define APP_MODULESET_TOOLS_API __declspec(dllexport)
+    #if ( defined APP_MODULE_ARUCOTEST_DSO_EXPORTS)
+      #define APP_MODULE_ARUCOTEST_TOOLS_API __declspec(dllexport)
       #pragma warning ( disable : 4251 ) //disable warning to templates with dll linkage.
       #pragma warning ( disable : 4290 ) //disable warning due to exception specifications.
       #pragma warning ( disable : 4996 ) //disable warning regarding unsafe vsprintf.
       #pragma warning ( disable : 4244 ) //disable warning convesions with lost of data.
     #else
-            #define APP_MODULESET_TOOLS_API __declspec(dllimport)
+            #define APP_MODULE_ARUCOTEST_TOOLS_API __declspec(dllimport)
     #endif
 #else
-    #define APP_MODULESET_TOOLS_API
+    #define APP_MODULE_ARUCOTEST_TOOLS_API
 #endif
 
 
-#define APP_MODULESET_TOOL_VERSION "1.0.0"
+#define APP_MODULE_ARUCOTEST_TOOL_VERSION "1.0.0"
 #endif

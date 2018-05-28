@@ -54,7 +54,7 @@ ELSE()
 
     ADD_LIBRARY(gparam_qt ${MOC_HDRS_APP} ${SRCS_APP} )
     qt5_use_modules(gparam_qt Widgets Network)
-    TARGET_LINK_LIBRARIES(gparam_qt  ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} )
+    TARGET_LINK_LIBRARIES(gparam_qt  ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} gparam )
     SET(REQUIRED_LIBRARIES_QT  ${QT_LIBRARIES})
 ENDIF()
 

@@ -11,10 +11,10 @@
 #include "gparam/paramsetwdgt.h"
 #include "./videoplayer.h"
 #include "aruco/aruco.h"
-
+#include "modulecalibration_exports.h"
 #include <iostream>
 class Gauss_Thread;
-class   ModuleCalibration: public AppModule {
+class APP_MODULE_CALIBRATION_TOOLS_API  ModuleCalibration: public AppModule {
     Q_OBJECT
 public:
     ModuleCalibration();
