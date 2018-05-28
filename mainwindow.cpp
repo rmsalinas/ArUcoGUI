@@ -50,6 +50,8 @@ cerr<<paramset<<endl;
 
 void MainWindow::on_ArucoParamsChanged(){
     AppParams::saveToSettings(ArucoGParams::get());
+    emit global_action_triggered( gparam::ParamSet("arucoParamsChanged"));
+
 }
 void MainWindow::on_arucoParamsShowAction_triggered(){
     if (_arucoDock->isVisible())

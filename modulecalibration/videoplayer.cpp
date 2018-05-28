@@ -68,19 +68,20 @@ VideoPlayer::~VideoPlayer()
 
 void VideoPlayer::openFile()
 {
-    QFileDialog fileDialog(this);
-    fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
-    fileDialog.setWindowTitle(tr("Open Movie"));
-    fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MoviesLocation).value(0, QDir::homePath()));
-    if (fileDialog.exec() == QDialog::Accepted){
-        auto url=fileDialog.selectedUrls().constFirst();
-        videoReader.open(url.toString().toStdString());
+      QSettings settings;
+      QString file = QFileDialog::getOpenFileName (
+                            this,
+                            tr ( "Select an input file" ),
+                            settings.value ( "currDir" ).toString(),
+                            tr ( "Open Movie (*.*)" ) );
+      if ( file!=QString() ) {
+          settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
+
+        videoReader.open(file.toStdString());
         if (!videoReader.isOpened()){
-            m_errorLabel->setText(tr("Could not open url ")+url.toString());
+            m_errorLabel->setText(tr("Could not open file ")+file);
             return;
         }
-
-        std::cerr<<"Opened successfully\n";
 
         m_positionSlider->setRange(0, videoReader.get(CV_CAP_PROP_FRAME_COUNT));
         m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
@@ -88,8 +89,7 @@ void VideoPlayer::openFile()
         m_plusButton->setEnabled(true);
         isPlaying=0;
         setPosition(0);
-        setWindowFilePath(url.isLocalFile() ? url.toLocalFile() : QString());
-    }
+     }
 }
 
 
@@ -139,7 +139,8 @@ void VideoPlayer::setPosition(int position)
     setImage(imIn);
 }
 
-void VideoPlayer::setImage(const cv::Mat &img2Show){
+void VideoPlayer::setImage(  cv::Mat &img2Show){
+    emit newImage(img2Show);
 
     QImage _qimgR ( ( const uchar * ) ( img2Show.ptr<uchar> ( 0 ) ),
                     img2Show.cols,img2Show.rows, QImage::Format_RGB888 ) ;

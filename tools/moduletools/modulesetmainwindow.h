@@ -50,7 +50,7 @@ private slots:
     void on_remove_progress_message(  );
 
 signals:
-    void global_action(const gparam::ParamSet &paramset);
+    void global_action_triggered(const gparam::ParamSet &paramset);
 private:
     QStackedWidget *_stckWidget;
     QToolBar *_modules_tb;

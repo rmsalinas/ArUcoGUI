@@ -68,12 +68,13 @@ void ModuleSetMainWindow::addModule ( std::string name, std::shared_ptr<AppModul
     module->deactivate();
     //now, add connections between this and the rest of modules
     for(auto mod:moduleMap){
-        QObject::connect( module.get(),&AppModule::global_action,mod.second.get().get(),&AppModule::on_global_action);
-        QObject::connect( mod.second.get().get(),&AppModule::global_action,module.get(),&AppModule::on_global_action);
+        QObject::connect( module.get(),&AppModule::global_action_triggered,mod.second.get().get(),&AppModule::on_global_action);
+        QObject::connect( mod.second.get().get(),&AppModule::global_action_triggered,module.get(),&AppModule::on_global_action);
     }
 
-    QObject::connect( module.get(),&AppModule::global_action,this,&ModuleSetMainWindow::on_global_action);
-    QObject::connect( this,&ModuleSetMainWindow::global_action,module.get(),&AppModule::on_global_action);
+
+    connect( module.get(),&AppModule::global_action_triggered,this,&ModuleSetMainWindow::on_global_action);
+    connect( this,&ModuleSetMainWindow::global_action_triggered,module.get(),&AppModule::on_global_action);
     //add to module map
     moduleMap.insert ( make_pair ( name, ModuleInfo ( module,_module_centralwidget_idx ) ) );
     moduleMap[name].action=_modules_tb->addAction(module->getIcon(),name.c_str());

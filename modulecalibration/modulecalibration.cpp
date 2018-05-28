@@ -2,16 +2,18 @@
 #include "modulecalibration.h"
 #include "moduletools/appparams.h"
 #include <iostream>
-
+#include "arucogparam.h"
 using namespace std;
 ModuleCalibration::ModuleCalibration() {
 
 
     vplayer=new VideoPlayer();
+    connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
     _tbar=new QToolBar ( getName().c_str() );
     reset_action= new QAction ( QIcon ( ":/images/reset.png" ), tr ( "&Reset..." ), this );
     connect(reset_action,SIGNAL(triggered()),this,SLOT(on_reset_action( )));
     _tbar->addAction(reset_action);
+
 
 
 
@@ -50,7 +52,7 @@ void ModuleCalibration::onGauss(){
     _gauss_thread->start();
     gparam::ParamSet pset("onGauss");
     pset.push_back(gparam::Param("test",int(1)));
-    emit global_action(pset);
+    emit global_action_triggered(pset);
 
 }
 void ModuleCalibration::on_gauss_thread_finished(){
@@ -91,5 +93,15 @@ void ModuleCalibration::on_deactivate (  ){
 }
 
 
-void ModuleCalibration::on_globalaction(const gparam::ParamSet &paramset){
+void ModuleCalibration::on_global_action(const gparam::ParamSet &paramset){
+    if (paramset.getName()=="arucoParamsChanged"){
+     //   ArucoGParams::loadFromParams(_arucoMDetector );
+    }
+}
+
+void ModuleCalibration::on_newVideoImage(cv::Mat &im){
+    auto markers=ArucoMarkerDetector::get().detect(im);
+    for(auto m:markers){
+            m.draw(im);
+    }
 }

@@ -66,7 +66,7 @@ public:
 signals:
     //
     void notify_action_progress(std::string action_name,int completeness,std::string message ,int minScaleRange=-1,int maxScaleRange=-1);
-    void global_action(const gparam::ParamSet &paramset);//use it to inform the application of something
+    void global_action_triggered(const gparam::ParamSet &paramset);//use it to inform the application of something
 
     /////////////////////////////////
     void activated();

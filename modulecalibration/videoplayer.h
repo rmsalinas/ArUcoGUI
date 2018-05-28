@@ -28,11 +28,12 @@ public slots:
 private slots:
     void playPauseButtonClicked( );
     void setPosition(int position);
-    void setImage(const cv::Mat &img2Show);
+    void setImage(  cv::Mat &img2Show);
     void nextFrame();
     void addCurrentImage();
 signals:
     void imageSelected();
+    void newImage(cv::Mat &);
 private:
     QAbstractButton *m_playButton,*m_plusButton;
     QSlider *m_positionSlider;

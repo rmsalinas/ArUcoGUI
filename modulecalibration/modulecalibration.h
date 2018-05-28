@@ -10,6 +10,7 @@
 #include "moduletools/appmodule.h"
 #include "gparam/paramsetwdgt.h"
 #include "videoplayer.h"
+#include "aruco/aruco.h"
 
 #include <iostream>
 class Gauss_Thread;
@@ -24,13 +25,14 @@ public:
 public slots:
     void on_activate (  );
     void on_deactivate (  );
-    void on_globalaction(const gparam::ParamSet &paramset);
+    void on_global_action(const gparam::ParamSet &paramset);
 
 private slots:
     void onParamsOkPressed();
     void on_reset_action();
     void onGauss();
     void on_gauss_thread_finished();
+    void on_newVideoImage(cv::Mat &im);
 signals:
     void mesh_generated(std::string);
 private:
@@ -44,6 +46,8 @@ private:
 
 
     VideoPlayer *vplayer=0;
+    aruco::MarkerDetector _arucoMDetector;
+
 };
 
 class Gauss_Thread : public QThread{

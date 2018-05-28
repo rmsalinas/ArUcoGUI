@@ -61,7 +61,7 @@ SET(USED_MODULES  modulecalibration moduletools gparam gparam_qt )
 # Add main files
 #################################1
 
-SET(qtproject_SRCS  main.cpp mainwindow.cpp    arucogparam.cpp    )
+SET(qtproject_SRCS  main.cpp mainwindow.cpp     )
 SET(qtproject_HDRS  mainwindow.h  arucogparam.h  )
 
 
