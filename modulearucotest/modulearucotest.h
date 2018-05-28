@@ -19,7 +19,7 @@ class   ModuleArucoTest: public AppModule {
 public:
     ModuleArucoTest();
     std::string getName() const {return "ArucoTest";}
-    std::string getToolBoxTitle() const {return "Example";}
+    std::string getToolBoxTitle() const {return "Detections";}
 
 
 public slots:

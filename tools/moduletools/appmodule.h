@@ -6,7 +6,9 @@
 #include <QToolBar>
 #include <QIcon>
 #include <QMenu>
+#include <QBoxLayout>
 #include <string>
+
 #include "exports.h"
 namespace gparam{
 class ParamSet;
@@ -74,7 +76,15 @@ signals:
 protected:
     void setControlPanel ( QWidget *dock ) {
         _dock=new QDockWidget ( getToolBoxTitle().c_str() );
-        _dock->setWidget ( dock );
+        QWidget *w=new QWidget;
+        QBoxLayout *dockLayout = new QHBoxLayout;
+        dockLayout->addSpacing(10);
+        dockLayout->addWidget(dock);
+        dockLayout->addSpacing(10);
+        w->setLayout(dockLayout );
+  //      _dock->setLayout(  );
+
+        _dock->setWidget ( w );
     }
     void setControlPanel ( QDockWidget *dock ) {
         _dock=  dock  ;

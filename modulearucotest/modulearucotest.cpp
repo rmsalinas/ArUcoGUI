@@ -1,4 +1,5 @@
 #include <QSplitter>
+#include <QPlainTextEdit>
 #include "modulearucotest.h"
 #include "moduletools/appparams.h"
 #include <iostream>
@@ -18,6 +19,37 @@ ModuleArucoTest::ModuleArucoTest() {
     tbar->addAction(act_ShowThresImage);
     setCentralWidget(vplayer);
     setToolBar(tbar);
+
+    //create a panel showing the detections
+    QWidget *controlPanel=new QWidget;
+
+    auto *detectionsLabel=new QPlainTextEdit;
+   // detectionsLabel->setText("LJ");
+
+    QAbstractButton *saveButton = new QPushButton(tr("Save..."));
+    saveButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/save.png" )));
+    QAbstractButton *clearButton = new QPushButton(tr("Clear..."));
+    clearButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/reset.png" )));
+//    connect(openButton, &QAbstractButton::clicked, this, &VideoPlayer::saveDetections);
+
+
+
+    QBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->addStretch(0);
+
+    buttonLayout->addWidget(clearButton);
+    buttonLayout->addWidget(saveButton);
+
+
+    QBoxLayout *controlLayout = new QVBoxLayout;
+    controlLayout->setMargin(0);
+    controlLayout->addWidget(detectionsLabel);
+    controlLayout->addLayout(buttonLayout);
+
+    controlPanel->setLayout(controlLayout);
+    setControlPanel(controlPanel);
+
+
 }
 
 

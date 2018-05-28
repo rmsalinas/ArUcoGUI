@@ -39,13 +39,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(aruco REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 #################################
 # Add modules
 #################################
+ADD_SUBDIRECTORY(3rdparty/aruco/aruco)
+include_directories(3rdparty/aruco)
 
 include_directories(. ./tools)
+
+
 SET(BUILD_QT ON)
 add_subdirectory(tools/gparam)
 add_subdirectory(tools/moduletools)

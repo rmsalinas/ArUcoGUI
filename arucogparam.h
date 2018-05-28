@@ -1,7 +1,7 @@
 #ifndef ARUCOGPARAM_H
 #define ARUCOGPARAM_H
 #include "gparam/gparam.h"
-#include "aruco.h"
+#include <aruco/aruco.h>
 #include <iostream>
 class ArucoGParams: public gparam::ParamSet {
 public:
