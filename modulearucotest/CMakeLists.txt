@@ -7,7 +7,7 @@ include_directories(.)
 QT5_WRAP_UI(${MODULENAME}_MOC_UIS_APP       ${${MODULENAME}_UIS})
 ADD_LIBRARY(${MODULENAME} ${${MODULENAME}_SRC} ${${MODULENAME}_HDR} ${${MODULENAME}_MOC_SRCS_APP} ${${MODULENAME}_MOC_UIS_APP})
 
-qt5_use_modules(${MODULENAME} Widgets Multimedia MultimediaWidgets )
+qt5_use_modules(${MODULENAME} Widgets     )
 
 SET_TARGET_PROPERTIES(${MODULENAME} PROPERTIES 				# create *nix style library versions + symbolic links
         DEFINE_SYMBOL APP_MODULE_ARUCOTEST_DSO_EXPORTS

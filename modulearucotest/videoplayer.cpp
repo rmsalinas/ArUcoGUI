@@ -1,8 +1,14 @@
 #include "videoplayer.h"
 
-#include <QtWidgets>
-#include <QVideoWidget>
-#include <QtGlobal>
+
+#include <QtGui>
+#include <QLabel>
+#include <QPushButton>
+#include <QStyle>
+#include <QSlider>
+#include <QBoxLayout>
+#include <QString>
+#include <QFileDialog>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>

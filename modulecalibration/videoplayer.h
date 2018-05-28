@@ -3,8 +3,6 @@
 #define modulecalibration_VIDEOPLAYER_H
 
 #include <QWidget>
-#include <QVideoFrame>
-#include <QVideoProbe>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include "tools/moduletools/exports.h"
