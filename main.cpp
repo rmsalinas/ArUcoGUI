@@ -6,7 +6,24 @@
 #include <QMainWindow>
 #include <QDir>
 #include "mainwindow.h"
+#ifdef WIN32
+#include <windows.h>
+void usleep(int ms){
+    Sleep(ms);
+}
 
+void freeConsole() {
+    FreeConsole();
+}
+#else
+#include <chrono>
+#include <thread>
+void freeConsole() {}
+void usleep(int ms){
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+#endif
 using namespace std;
 class CmdLineParser{int argc; char **argv; public:
                     CmdLineParser(int _argc,char **_argv):argc(_argc),argv(_argv){}
@@ -18,7 +35,7 @@ class CmdLineParser{int argc; char **argv; public:
 int main(int argc, char *argv[])
 {
 
-
+    freeConsole();
 
    // std::setlocale(LC_ALL, "spanish");
    // std::cout << std::locale().name() << std::endl;
@@ -43,7 +60,8 @@ int main(int argc, char *argv[])
 
     //now, go to user space
     QDir::setCurrent(QDir::homePath());
-    mw->show();
+//    mw->show();
+    mw->showMaximized();
     return QApp.exec();
 
 }

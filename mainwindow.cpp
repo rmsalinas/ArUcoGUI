@@ -15,7 +15,8 @@ using namespace std;
 MainWindow::MainWindow ( QWidget *parent  ) :
 ModuleSetMainWindow ( parent )  {
     try {
-        setWindowTitle ( "Qt Project" );
+        setWindowTitle ( "ArUco GUI" );
+        setWindowIcon(QIcon ( ":/images/aruco_params.png" ));
         resize ( 640,480 );
 
         _tbar=new QToolBar (  "Main Toolbar" );
