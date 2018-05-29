@@ -12,6 +12,7 @@ ModuleArucoTest::ModuleArucoTest() {
 
 
     vplayer=new VideoPlayer();
+    vplayer->setProcessImageWithArucoDetector(false);
     connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_params.png" ) ));
     QToolBar *tbar=new QToolBar("Aruco");

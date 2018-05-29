@@ -6,7 +6,6 @@
 #include <QPushButton>
 #include <QStyle>
 #include <QSlider>
-#include <QBoxLayout>
 #include <QString>
 #include <QFileDialog>
 #include <iostream>
@@ -14,6 +13,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <cstring>
+#include "arucogparam.h"
 
 class VideoImagePlayerBase{
 public:
@@ -149,12 +149,13 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     m_errorLabel = new QLabel;
     m_errorLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
-    QBoxLayout *controlLayout = new QHBoxLayout;
+   controlLayout = new QHBoxLayout;
     controlLayout->setMargin(0);
     controlLayout->addWidget(openVideoButton);
     controlLayout->addWidget(openImagesButton);
     controlLayout->addWidget(m_playButton);
     controlLayout->addWidget(m_positionSlider);
+
     m_playButton->hide();
     m_positionSlider->hide();
 
@@ -170,6 +171,12 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 
 VideoPlayer::~VideoPlayer()
 {
+}
+void VideoPlayer::addButton(QAbstractButton* btn){
+    controlLayout->addWidget(btn);
+    addedButtons.push_back(btn);
+
+
 }
 
 void VideoPlayer::openImages()
@@ -214,9 +221,12 @@ void VideoPlayer::openVideoFile(){
 
 
 void VideoPlayer::prepareForOpenedReader(){
+    emit     openedImageOrVideo();
 
     m_positionSlider->setPageStep(_reader->get(CV_CAP_PROP_FRAME_COUNT)>=40?10:1);
     m_positionSlider->setRange(0, _reader->get(CV_CAP_PROP_FRAME_COUNT)-1);
+    m_positionSlider->setTickInterval(_reader->get(CV_CAP_PROP_FRAME_COUNT)>=40?_reader->get(CV_CAP_PROP_FRAME_COUNT)/10:1);
+     m_positionSlider->setTickPosition(QSlider::TicksBelow);
     if (_reader->get(CV_CAP_PROP_FRAME_COUNT)>1){
         m_playButton->show();
         m_positionSlider->show();
@@ -264,15 +274,36 @@ void VideoPlayer::playNextFrame(){
     }
 }
 
+void VideoPlayer::updateImage(){
+    if (imIn.empty()) return ;
+    imIn.copyTo(imshown);
+    if (_processImageWithArucoDetector){
+        detectedMarkers=ArucoMarkerDetector::get().detect(imshown);
+        for(auto m:detectedMarkers) m.draw(imshown);
+    }
+    setImage(imshown);
+
+}
+
+
 bool VideoPlayer::grabAndShow(){
     m_positionSlider->blockSignals(true);
     m_positionSlider->setValue(_reader->get(CV_CAP_PROP_POS_FRAMES));
     m_positionSlider->blockSignals(false);
     if (!_reader->grab()) return false;
     _reader->retrieve(imIn);
-   // m_errorLabel->setText(_reader->getInfo().c_str());
+
     emit newImage(imIn);
-    setImage(imIn);
+
+
+    if (imIn.empty()) return false;
+    imIn.copyTo(imshown);
+
+    if (_processImageWithArucoDetector){
+        detectedMarkers=ArucoMarkerDetector::get().detect(imshown);
+        for(auto m:detectedMarkers) m.draw(imshown);
+    }
+    setImage(imshown);
     return true;
 }
 
@@ -292,10 +323,7 @@ void VideoPlayer::setPosition(int position)
    // grabAndShow();
 }
 
-void VideoPlayer::addCurrentImage(){
-    imIn.copyTo(selectedImage);
-    emit imageSelected();
-}
+
 void VideoPlayer::setImage(  cv::Mat &img2Show){
 
 

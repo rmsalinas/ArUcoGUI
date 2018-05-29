@@ -41,8 +41,7 @@ private:
     QPlainTextEdit *detectionsLabel;
     QAction *act_ShowThresImage;
     VideoPlayer *vplayer=0;
-    aruco::MarkerDetector _arucoMDetector;
-    cv::Mat currImage;
+     cv::Mat currImage;
 
 
 

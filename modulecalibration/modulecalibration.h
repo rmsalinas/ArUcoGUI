@@ -12,6 +12,8 @@
 #include "videoplayer/videoplayer.h"
 #include "aruco/aruco.h"
 #include "modulecalibration_exports.h"
+
+#include "calibrationcontrolpanel.h"
 #include <iostream>
 class Gauss_Thread;
 class APP_MODULE_CALIBRATION_TOOLS_API  ModuleCalibration: public AppModule {
@@ -19,7 +21,7 @@ class APP_MODULE_CALIBRATION_TOOLS_API  ModuleCalibration: public AppModule {
 public:
     ModuleCalibration();
     std::string getName() const {return "Calibration";}
-    std::string getToolBoxTitle() const {return "Example";}
+    std::string getToolBoxTitle() const {return "Calibration Parameters";}
 
 
 public slots:
@@ -33,10 +35,13 @@ private slots:
     void onGauss();
     void on_gauss_thread_finished();
     void on_newVideoImage(cv::Mat &im);
+    void on_vplayer_opened();
+    void on_addCurrent();
+    void on_addAll();
 signals:
     void mesh_generated(std::string);
 private:
-     QToolBox *_tbox=0;
+    QToolBox *_tbox=0;
     QToolBar *_tbar=0;
     gparam::ParamSet gauss_params;
     QAction *reset_action;
@@ -44,9 +49,9 @@ private:
 
     void readParamSet();
 
-
+ QAbstractButton *Btn_addCurImage,*Btn_gotoNextFrame;
     VideoPlayer *vplayer=0;
-    aruco::MarkerDetector _arucoMDetector;
+    calibrationControlPanel *CalibPanel;
 
 };
 

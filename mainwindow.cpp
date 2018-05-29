@@ -35,7 +35,7 @@ ModuleSetMainWindow ( parent )  {
         connect(_arucoWdgt,SIGNAL(paramChanged(int)),this,SLOT(on_ArucoParamsChanged()));
          _arucoDock=new QDockWidget (  "Aruco Params" );
         _arucoDock->setWidget (  _arucoWdgt);
-        addDockWidget ( Qt::TopDockWidgetArea, _arucoDock );
+        addDockWidget ( Qt::LeftDockWidgetArea, _arucoDock );
 
 
         //ADD MODULES

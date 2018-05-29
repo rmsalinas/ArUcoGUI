@@ -1,7 +1,7 @@
 SET(MODULENAME modulecalibration)
-SET(${MODULENAME}_SRC   modulecalibration.cpp  )
-SET(${MODULENAME}_HDR   modulecalibration.h   modulecalibration_exports.h)
-#SET(${MODULENAME}_UIS  ModuleCalibration.ui)
+SET(${MODULENAME}_SRC   modulecalibration.cpp  calibrationcontrolpanel.cpp)
+SET(${MODULENAME}_HDR   modulecalibration.h   modulecalibration_exports.h calibrationcontrolpanel.h)
+SET(${MODULENAME}_UIS  calibrationcontrolpanel.ui)
 
 include_directories(.)
 QT5_WRAP_UI(${MODULENAME}_MOC_UIS_APP       ${${MODULENAME}_UIS})
