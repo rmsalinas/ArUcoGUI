@@ -91,5 +91,6 @@ ADD_CUSTOM_TARGET(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/c
 CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/cmake/config.cmake.in" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake")
 INSTALL(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION share/${PROJECT_NAME} )
 
+CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/cmake/installer_script.iss.in" "${PROJECT_BINARY_DIR}/installer_script.iss")
 
 include(cmake/display.cmake)
