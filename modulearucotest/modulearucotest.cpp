@@ -11,7 +11,7 @@ using namespace std;
 ModuleArucoTest::ModuleArucoTest() {
 
 
-    vplayer=new modulearucotest::VideoPlayer();
+    vplayer=new VideoPlayer();
     connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_params.png" ) ));
     QToolBar *tbar=new QToolBar("Aruco");

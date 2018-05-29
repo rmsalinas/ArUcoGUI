@@ -9,7 +9,7 @@
 #include <memory>
 #include "moduletools/appmodule.h"
 #include "gparam/paramsetwdgt.h"
-#include "./videoplayer.h"
+#include "videoplayer/videoplayer.h"
 #include "aruco/aruco.h"
 #include "modulecalibration_exports.h"
 #include <iostream>
@@ -45,7 +45,7 @@ private:
     void readParamSet();
 
 
-    modulecalibration::VideoPlayer *vplayer=0;
+    VideoPlayer *vplayer=0;
     aruco::MarkerDetector _arucoMDetector;
 
 };

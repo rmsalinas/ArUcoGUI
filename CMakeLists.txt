@@ -51,6 +51,8 @@ include_directories(. ./tools)
 SET(BUILD_QT ON)
 add_subdirectory(tools/gparam)
 add_subdirectory(tools/moduletools)
+add_subdirectory(videoplayer)
+
 add_subdirectory(modulecalibration)
 add_subdirectory(modulearucotest)
 SET(USED_MODULES  modulecalibration modulearucotest  )

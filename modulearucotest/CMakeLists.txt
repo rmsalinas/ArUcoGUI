@@ -1,6 +1,6 @@
 SET(MODULENAME modulearucotest)
-SET(${MODULENAME}_SRC   modulearucotest.cpp videoplayer.cpp)
-SET(${MODULENAME}_HDR   modulearucotest.h videoplayer.h  modulearucotest_exports.h)
+SET(${MODULENAME}_SRC   modulearucotest.cpp  )
+SET(${MODULENAME}_HDR   modulearucotest.h   modulearucotest_exports.h)
 #SET(${MODULENAME}_UIS  ModuleCalibration.ui)
 
 include_directories(.)
@@ -19,7 +19,7 @@ SET_TARGET_PROPERTIES(${MODULENAME} PROPERTIES 				# create *nix style library v
 
 
 
-TARGET_LINK_LIBRARIES(${MODULENAME}  ${QT_LIBRARIES} moduletools opencv_core opencv_imgproc opencv_highgui aruco)
+TARGET_LINK_LIBRARIES(${MODULENAME}  ${QT_LIBRARIES} moduletools opencv_core opencv_imgproc opencv_highgui aruco videoplayer)
 
 INSTALL(TARGETS ${MODULENAME}
         RUNTIME DESTINATION bin COMPONENT main			# Install the dll file in bin directory

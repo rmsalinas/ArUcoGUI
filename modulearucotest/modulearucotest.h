@@ -10,7 +10,7 @@
 #include <memory>
 #include "moduletools/appmodule.h"
 #include "gparam/paramsetwdgt.h"
-#include "videoplayer.h"
+#include "videoplayer/videoplayer.h"
 #include "aruco/aruco.h"
 #include <QAction>
 #include "modulearucotest_exports.h"
@@ -40,7 +40,7 @@ private:
 
     QPlainTextEdit *detectionsLabel;
     QAction *act_ShowThresImage;
-    modulearucotest::VideoPlayer *vplayer=0;
+    VideoPlayer *vplayer=0;
     aruco::MarkerDetector _arucoMDetector;
     cv::Mat currImage;
 

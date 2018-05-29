@@ -7,7 +7,7 @@ using namespace std;
 ModuleCalibration::ModuleCalibration() {
 
 
-    vplayer=new modulecalibration::VideoPlayer();
+    vplayer=new VideoPlayer();
     connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
     _tbar=new QToolBar ( getName().c_str() );
     reset_action= new QAction ( QIcon ( ":/images/reset.png" ), tr ( "&Reset..." ), this );
@@ -39,20 +39,20 @@ void ModuleCalibration::on_reset_action(){
 }
 void ModuleCalibration::onGauss(){
 
-    modulecalibration::VideoPlayer *vp=new modulecalibration::VideoPlayer();
-    vp->show();
-    return;
-    AppParams::saveToSettings(gauss_params);//save the current params
+//    VideoPlayer *vp=new modulecalibration::VideoPlayer();
+//    vp->show();
+//    return;
+//    AppParams::saveToSettings(gauss_params);//save the current params
 
-    if(_gauss_thread) return;//already running
-    _gauss_thread=std::make_shared<Gauss_Thread>( gauss_params);
+//    if(_gauss_thread) return;//already running
+//    _gauss_thread=std::make_shared<Gauss_Thread>( gauss_params);
 
-    QObject::connect(_gauss_thread.get(), &Gauss_Thread::finished,this, &ModuleCalibration::on_gauss_thread_finished);
-    QObject::connect(_gauss_thread.get(),&Gauss_Thread::notify_action_progress,this,&ModuleCalibration::notify_action_progress);
-    _gauss_thread->start();
-    gparam::ParamSet pset("onGauss");
-    pset.push_back(gparam::Param("test",int(1)));
-    emit global_action_triggered(pset);
+//    QObject::connect(_gauss_thread.get(), &Gauss_Thread::finished,this, &ModuleCalibration::on_gauss_thread_finished);
+//    QObject::connect(_gauss_thread.get(),&Gauss_Thread::notify_action_progress,this,&ModuleCalibration::notify_action_progress);
+//    _gauss_thread->start();
+//    gparam::ParamSet pset("onGauss");
+//    pset.push_back(gparam::Param("test",int(1)));
+//    emit global_action_triggered(pset);
 
 }
 void ModuleCalibration::on_gauss_thread_finished(){

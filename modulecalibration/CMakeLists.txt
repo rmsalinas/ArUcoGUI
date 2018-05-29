@@ -1,6 +1,6 @@
 SET(MODULENAME modulecalibration)
-SET(${MODULENAME}_SRC   modulecalibration.cpp videoplayer.cpp)
-SET(${MODULENAME}_HDR   modulecalibration.h videoplayer.h modulecalibration_exports.h)
+SET(${MODULENAME}_SRC   modulecalibration.cpp  )
+SET(${MODULENAME}_HDR   modulecalibration.h   modulecalibration_exports.h)
 #SET(${MODULENAME}_UIS  ModuleCalibration.ui)
 
 include_directories(.)
@@ -16,7 +16,7 @@ SET_TARGET_PROPERTIES(${MODULENAME} PROPERTIES 				# create *nix style library v
         CLEAN_DIRECT_OUTPUT 1 					# allow creating static and shared libs without conflicts
         OUTPUT_NAME "${MODULENAME}${PROJECT_DLLVERSION}" 	# avoid conflicts between library and binary target names
 )
-TARGET_LINK_LIBRARIES(${MODULENAME}  ${QT_LIBRARIES} moduletools opencv_core opencv_imgproc opencv_highgui aruco)
+TARGET_LINK_LIBRARIES(${MODULENAME}  ${QT_LIBRARIES} moduletools opencv_core opencv_imgproc opencv_highgui aruco videoplayer)
 
 INSTALL(TARGETS ${MODULENAME}
         RUNTIME DESTINATION bin COMPONENT main			# Install the dll file in bin directory

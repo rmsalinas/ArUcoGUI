@@ -14,7 +14,6 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <cstring>
-namespace modulearucotest {
 
 class VideoImagePlayerBase{
 public:
@@ -306,4 +305,3 @@ void VideoPlayer::setImage(  cv::Mat &img2Show){
     imgLabel-> setPixmap ( QPixmap::fromImage ( _qimgR.rgbSwapped() ) );
 }
 
-}
