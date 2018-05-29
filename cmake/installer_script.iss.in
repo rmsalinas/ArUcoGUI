@@ -5,13 +5,13 @@
 #define MyAppVersion "@PROJECT_VERSION@"
 #define MyAppPublisher "Ava group"
 #define MyAppURL "http://www.uco.es/grupos/ava/"
-#define MyAppExeName "ArUCOGUI.exe"
+#define MyAppExeName "ArUcoGUI.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{9DC5690C-07I3-85T6-A8T6-QBA3691EO4B8}
+AppId={{60CD7C33-AE08-4ECF-90C7-7663876D312F}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -21,7 +21,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputBaseFilename=ArUcoGUI-Installer-{#MyAppVersion}
-SetupIconFile=@CMAKE_INSTALL_PREFIX@\bin\program_icon.ico
+SetupIconFile=@CMAKE_INSTALL_PREFIX@\bin\aruco.ico
 Compression=lzma
 SolidCompression=yes
 ChangesAssociations=yes
@@ -37,13 +37,13 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "@CMAKE_INSTALL_PREFIX@\bin\*"; DestDir: "{app}"; Flags: ignoreversion createallsubdirs recursesubdirs
-;Source: "vcredist_x86.exe"; DestDir: "{tmp}"
+Source: "vc_redist.x64.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}" ;   IconFilename: "{app}\program_icon.ico";
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon ;IconFilename: "{app}\program_icon.ico";
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}" ;   IconFilename: "{app}\aruco.ico";
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon ;IconFilename: "{app}\aruco.ico";
 
 [Run] 
-;Filename: "{tmp}\vcredist_x86.exe"; 
+Filename: "{tmp}\vc_redist.x64.exe";
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

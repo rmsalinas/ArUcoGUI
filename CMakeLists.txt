@@ -80,17 +80,9 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}   ${QT_LIBRARIES}  ${REQUIRED_LIBRARIES} $
 INSTALL(TARGETS ${PROJECT_NAME}  RUNTIME DESTINATION bin)
 
 
-# ----------------------------------------------------------------------------
-#   Uninstall target, for "make uninstall"
-# ----------------------------------------------------------------------------
-CONFIGURE_FILE( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
-ADD_CUSTOM_TARGET(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
-# ----------------------------------------------------------------------------
-# create configuration file from .in file (If you use windows take care with paths)
-# ----------------------------------------------------------------------------
-CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/cmake/config.cmake.in" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake")
-INSTALL(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION share/${PROJECT_NAME} )
 
 CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/cmake/installer_script.iss.in" "${PROJECT_BINARY_DIR}/installer_script.iss")
+INSTALL(FILES "${PROJECT_BINARY_DIR}/installer_script.iss"  DESTINATION . )
+INSTALL(FILES "${PROJECT_SOURCE_DIR}/images/aruco.ico"     DESTINATION bin )
 
 include(cmake/display.cmake)
