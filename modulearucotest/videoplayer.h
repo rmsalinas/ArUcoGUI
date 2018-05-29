@@ -5,12 +5,13 @@
 #include <QWidget>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
+#include <memory>
 class QAbstractButton;
 class QSlider;
 class QLabel;
 class QUrl;
 namespace modulearucotest {
-
+class VideoImagePlayerBase;
 class VideoPlayer : public QWidget
 {
     Q_OBJECT
@@ -22,7 +23,8 @@ public:
     cv::Mat getLastImageSelected();
     int getFramePos();
 public slots:
-    void openFile();
+    void openVideoFile();
+    void openImages();
     void setImage(  cv::Mat &img2Show);
 
 private slots:
@@ -38,9 +40,11 @@ private:
     QSlider *m_positionSlider;
     QLabel *m_errorLabel;
     cv::Mat imIn,selectedImage;
-    cv::VideoCapture videoReader;
     QLabel *imgLabel;
     int isPlaying=0;
+    std::shared_ptr<VideoImagePlayerBase> _reader;
+
+    void prepareForOpenedReader();
 };
 }
 

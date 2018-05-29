@@ -57,5 +57,6 @@
         <file>images/cityoflove.jpg</file>
         <file>images/aruco_params.png</file>
         <file>images/blackwhite.png</file>
+        <file>images/movie.png</file>
     </qresource>
 </RCC>
