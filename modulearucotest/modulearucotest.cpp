@@ -1,5 +1,7 @@
 #include <QSplitter>
 #include <QPlainTextEdit>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "modulearucotest.h"
 #include "moduletools/appparams.h"
 #include <iostream>
@@ -25,6 +27,7 @@ ModuleArucoTest::ModuleArucoTest() {
 
      detectionsLabel=new QPlainTextEdit;
      detectionsLabel->setWordWrapMode(QTextOption::NoWrap);
+     on_clearDetections();
 
     QAbstractButton *saveButton = new QPushButton(tr("Save..."));
     saveButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/save.png" )));
@@ -55,9 +58,26 @@ ModuleArucoTest::ModuleArucoTest() {
 }
 
 void ModuleArucoTest::on_clearDetections(){
+
     detectionsLabel->clear();
+    detectionsLabel->insertPlainText("#Frame/Image,NOfDetections,MarkerId,c0_x,c0_y,c1_x,c1_y,c2_x,c2_y,c3_x,c3_y ....\n");
 }
 void ModuleArucoTest::on_saveDetections(){
+    QSettings settings;
+    QString filepath = QFileDialog::getSaveFileName(
+                vplayer,
+                tr ( "Select an output file" ),
+                settings.value ( "currDir" ).toString()+"/arucodetections.csv",
+                tr ( "Text File (*.csv)" ) );
+    if ( filepath==QString() ) return;
+    settings.setValue ( "currDir",QFileInfo ( filepath ).absolutePath() );
+    QFileInfo qfile(filepath);
+    if (qfile.completeSuffix()!="csv")
+        filepath+=".csv";
+    ofstream file(filepath.toStdString());
+    if (!file)
+        QMessageBox::critical ( vplayer,tr ( "Error" ),tr ( "Could not open file for writing " )+filepath );
+    else file<<detectionsLabel->toPlainText().toStdString();
 
 }
 
@@ -90,14 +110,16 @@ void ModuleArucoTest::redraw(){
 }
 
 void ModuleArucoTest::printDetectionsText(const std::vector<aruco::Marker> &markers){
-QString text;
-text.setNum( vplayer->getFramePos());
-text+=" ";
+QString text=vplayer->getCurrentImageInfo().c_str();
+text+=","+QString::number(markers.size());
         for(const auto &m:markers){
             std::stringstream str;
-            str<<m;
+            str<<",  "<<m.id<<",";
+            for(int i=0;i<4;i++){
+                str<<m[i].x<<","<<m[i].y;
+                if (i!=3)str<<",";
+            }
             text+=str.str().c_str();
-            text+=" ";
     }
         text+="\n";
         detectionsLabel->insertPlainText(text);

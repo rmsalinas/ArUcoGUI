@@ -25,6 +25,7 @@ public:
     virtual void set(int prop,double val)=0;
     virtual std::string getInfo()const=0;
 };
+
 class _ImagePlayer:public VideoImagePlayerBase{
     std::vector<std::string> tokenize(const std::string& in, const std::string& delims )
     {
@@ -48,8 +49,9 @@ class _ImagePlayer:public VideoImagePlayerBase{
 public:
     std::vector<std::string> files;
     int curFile=-1;
+    std::string info;
     cv::Mat image;
-    void open(const QStringList &strlist){
+    _ImagePlayer(const QStringList &strlist){
         files.clear();
         //divide by ;
         for(int i=0;i<strlist.size();i++){
@@ -61,6 +63,7 @@ public:
     virtual bool grab(){
         if (curFile>=files.size())return false;
         image=cv::imread(files[curFile]);
+        info=files[curFile];
         curFile++;
         return true;
     }
@@ -84,26 +87,31 @@ public:
 
     }
     virtual std::string getInfo()const{
-        if (curFile>=0 && curFile<files.size())        return files[curFile];
-        else return "";
+            return info;
     }
 };
 
 class _VideoPlayer:public VideoImagePlayerBase{
     cv::VideoCapture videoReader;
-    std::string fpath;
+    QString fpath;
+    std::string info;
 public:
 
-    virtual void open(std::string filePath){videoReader.open(filePath);fpath=filePath;}
+      _VideoPlayer(const QString & filePath){videoReader.open(filePath.toStdString());
+                                                fpath=QFile(filePath).fileName();}
     virtual bool isOpened()const{return videoReader.isOpened();}
-    virtual bool grab(){return videoReader.grab();}
+    virtual bool grab(){
+          info=QString::number(videoReader.get(CV_CAP_PROP_POS_FRAMES)).toStdString();
+          return videoReader.grab();
+      }
     virtual void retrieve(cv::Mat &im){videoReader.retrieve(im);}
     virtual double get(int prop){return videoReader.get(prop);}
     virtual void set(int prop,double val){videoReader.set(prop,val);}
-    virtual std::string getInfo()const{return fpath;}
-
-
+    virtual std::string getInfo()const{
+        return info;
+    }
 };
+
 VideoPlayer::VideoPlayer(QWidget *parent)
     : QWidget(parent)
 {
@@ -133,8 +141,11 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 
     m_positionSlider = new QSlider(Qt::Horizontal);
     m_positionSlider->setRange(0, 0);
+    std::cerr<<"INF="<<m_positionSlider->singleStep()<<" "<<m_positionSlider->pageStep()<<std::endl;
 
-    connect(m_positionSlider, &QAbstractSlider::sliderMoved,this, &VideoPlayer::setPosition);
+  //  connect(m_positionSlider, &QAbstractSlider::sliderMoved,this, &VideoPlayer::setPosition);
+    connect(m_positionSlider, &QAbstractSlider::sliderReleased,this, &VideoPlayer::sliderReleased);
+    connect(m_positionSlider, &QAbstractSlider::valueChanged,this, &VideoPlayer::valueChanged);
 
     m_errorLabel = new QLabel;
     m_errorLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
@@ -174,8 +185,8 @@ void VideoPlayer::openImages()
 
     settings.setValue ( "currDir",QFileInfo ( files.at(0) ).absolutePath() );
 
-    _reader=std::make_shared<_ImagePlayer>();
-    ((_ImagePlayer*)_reader.get())->open(files );
+    m_errorLabel->clear();
+    _reader=std::make_shared<_ImagePlayer>(files);
     if (!_reader->isOpened()){
         m_errorLabel->setText(tr("Could not open image files"));
         return;
@@ -194,8 +205,7 @@ void VideoPlayer::openVideoFile(){
 
     settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
 
-    _reader=std::make_shared<_VideoPlayer>();
-     ((_VideoPlayer*)_reader.get())->open(file.toStdString() );
+    _reader=std::make_shared<_VideoPlayer>(file);
     if (!_reader->isOpened()){
         m_errorLabel->setText(tr("Could not open file ")+file);
         return;
@@ -206,7 +216,8 @@ void VideoPlayer::openVideoFile(){
 
 void VideoPlayer::prepareForOpenedReader(){
 
-    m_positionSlider->setRange(0, _reader->get(CV_CAP_PROP_FRAME_COUNT));
+    m_positionSlider->setPageStep(_reader->get(CV_CAP_PROP_FRAME_COUNT)>=40?10:1);
+    m_positionSlider->setRange(0, _reader->get(CV_CAP_PROP_FRAME_COUNT)-1);
     if (_reader->get(CV_CAP_PROP_FRAME_COUNT)>1){
         m_playButton->show();
         m_positionSlider->show();
@@ -218,14 +229,15 @@ void VideoPlayer::prepareForOpenedReader(){
     m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     m_playButton->setEnabled(true);
     isPlaying=0;
-    setPosition(0);
+    m_positionSlider->setValue(0);
+    grabAndShow();
 
 }
 
 
-int VideoPlayer::getFramePos(){
-    if (!_reader->isOpened() )return -1;
-    else return _reader->get(CV_CAP_PROP_POS_FRAMES);
+std::string VideoPlayer::getCurrentImageInfo(){
+    if (!_reader) return "";
+    return _reader->getInfo();
 }
 
 
@@ -234,7 +246,7 @@ void VideoPlayer::playPauseButtonClicked()
     if (!isPlaying){
         m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
         isPlaying=1;
-        nextFrame();
+        playNextFrame();
     }
     else{
         m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
@@ -242,38 +254,49 @@ void VideoPlayer::playPauseButtonClicked()
     }
 }
 
-void VideoPlayer::nextFrame(){
-    if (_reader->grab()){
-        _reader->retrieve(imIn);
-        m_positionSlider->setValue(_reader->get(CV_CAP_PROP_POS_FRAMES));
-        emit newImage(imIn);
-        setImage(imIn);
-        if (isPlaying) {
-            double fps=_reader->get(CV_CAP_PROP_FPS);
-            QTimer::singleShot((1000./fps)-2,this,SLOT(nextFrame()));
-        }
-    }
+void VideoPlayer::playNextFrame(){
+    bool res=grabAndShow();
+
+    if(res && isPlaying)
+        QTimer::singleShot((1000./_reader->get(CV_CAP_PROP_FPS))-2,this,SLOT(playNextFrame()));
     else{
         isPlaying=0;
         m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     }
+}
+
+bool VideoPlayer::grabAndShow(){
+    m_positionSlider->blockSignals(true);
+    m_positionSlider->setValue(_reader->get(CV_CAP_PROP_POS_FRAMES));
+    m_positionSlider->blockSignals(false);
+    if (!_reader->grab()) return false;
+    _reader->retrieve(imIn);
+   // m_errorLabel->setText(_reader->getInfo().c_str());
+    emit newImage(imIn);
+    setImage(imIn);
+    return true;
+}
+
+void VideoPlayer::valueChanged(int value){
+    std::cerr<<"value changed:"<<value<<"\n";
+    _reader->set(CV_CAP_PROP_POS_FRAMES,m_positionSlider->value());
+    grabAndShow();
+}
+void VideoPlayer::sliderReleased(){
+    std::cerr<<"sliderReleased\n";
+}
+void VideoPlayer::setPosition(int position)
+{
+    std::cerr<<"setPosition\n";
+    m_positionSlider->setValue(position);
+   // _reader->set(CV_CAP_PROP_POS_FRAMES,position);
+   // grabAndShow();
 }
 
 void VideoPlayer::addCurrentImage(){
     imIn.copyTo(selectedImage);
     emit imageSelected();
 }
-
-void VideoPlayer::setPosition(int position)
-{
-    m_positionSlider->setValue(position);
-    _reader->set(CV_CAP_PROP_POS_FRAMES,position);
-    _reader->grab();
-    _reader->retrieve(imIn);
-    emit newImage(imIn);
-    setImage(imIn);
-}
-
 void VideoPlayer::setImage(  cv::Mat &img2Show){
 
 

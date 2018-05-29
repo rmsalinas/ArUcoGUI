@@ -21,7 +21,7 @@ public:
 
 
     cv::Mat getLastImageSelected();
-    int getFramePos();
+    std::string getCurrentImageInfo();
 public slots:
     void openVideoFile();
     void openImages();
@@ -30,7 +30,9 @@ public slots:
 private slots:
     void playPauseButtonClicked( );
     void setPosition(int position);
-    void nextFrame();
+    void sliderReleased( );
+    void valueChanged(int);
+    void playNextFrame();
     void addCurrentImage();
 signals:
     void imageSelected();
@@ -45,6 +47,7 @@ private:
     std::shared_ptr<VideoImagePlayerBase> _reader;
 
     void prepareForOpenedReader();
+    bool grabAndShow();
 };
 }
 
