@@ -10,11 +10,7 @@ ModuleCalibration::ModuleCalibration() {
 
     vplayer=new VideoPlayer();
     connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
-    _tbar=new QToolBar ( getName().c_str() );
-    reset_action= new QAction ( QIcon ( ":/images/reset.png" ), tr ( "&Reset..." ), this );
-    connect(reset_action,SIGNAL(triggered()),this,SLOT(on_reset_action( )));
     connect(vplayer,SIGNAL(openedImageOrVideo()),this,SLOT(on_vplayer_opened()));
-    _tbar->addAction(reset_action);
 
     Btn_addCurImage = new QPushButton(tr("&Add Current..."));
     connect(Btn_addCurImage, &QAbstractButton::clicked, this, &ModuleCalibration::on_addCurrent);
@@ -49,7 +45,7 @@ ModuleCalibration::ModuleCalibration() {
     //register the elements created
     setCentralWidget(vplayer);
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/module-3d.png" ) ));
-    setToolBar(_tbar);
+   // setToolBar(_tbar);
     CalibPanel=new calibrationControlPanel();
     setControlPanel(CalibPanel);
 
@@ -67,7 +63,7 @@ void ModuleCalibration::on_addAll(){
     if( vplayer->getDetectedMarkers().size()!=0)
         CalibPanel->add(vplayer->getShownImage(),vplayer->getDetectedMarkers(),QString("Frame: #")+vplayer->getCurrentImageInfo().c_str() );
     if(    vplayer->playNextFrame())
-         QTimer::singleShot(10,this,SLOT(on_addAll()));
+         QTimer::singleShot(30,this,SLOT(on_addAll()));
 }
 
 

@@ -42,8 +42,7 @@ private slots:
     void mesh_generated(std::string);
 private:
     QToolBox *_tbox=0;
-    QToolBar *_tbar=0;
-    gparam::ParamSet gauss_params;
+     gparam::ParamSet gauss_params;
     QAction *reset_action;
     std::shared_ptr<Gauss_Thread> _gauss_thread;
 

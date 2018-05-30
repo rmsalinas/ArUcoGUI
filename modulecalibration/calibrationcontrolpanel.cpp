@@ -99,7 +99,7 @@ void calibrationControlPanel::on_pb_compute_clicked()
     float currRepjErr=0;
       camParams=aruco_cameraCalibrate(allMarkers, ImagesMarkers.front().image.cols,ImagesMarkers.front().image.rows, 1,&currRepjErr);
     std::stringstream sstr;
-    sstr<<tr("Reprojection Error=").toStdString()<<currRepjErr<<"pix"<<std::endl;
+    sstr<<tr("Reprojection Error:").toStdString()<<currRepjErr<<"pix"<<std::endl<<std::endl;
     ui->pte_results->clear();
     ui->pte_results->insertPlainText(sstr.str().c_str());
     std::stringstream sstr2;

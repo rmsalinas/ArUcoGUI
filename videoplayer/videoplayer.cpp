@@ -151,6 +151,8 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 
    controlLayout = new QHBoxLayout;
     controlLayout->setMargin(0);
+    controlLayout->addStretch(10);
+
     controlLayout->addWidget(openVideoButton);
     controlLayout->addWidget(openImagesButton);
     controlLayout->addWidget(m_playButton);
