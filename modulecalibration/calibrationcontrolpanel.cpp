@@ -1,6 +1,5 @@
 #include "calibrationcontrolpanel.h"
 #include "ui_calibrationcontrolpanel.h"
-#include "calibrator.h"
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QSettings>
