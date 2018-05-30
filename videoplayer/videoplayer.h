@@ -32,12 +32,13 @@ public:
     void setProcessImageWithArucoDetector(bool v){_processImageWithArucoDetector=v;};
     bool processImageWithArucoDetector()const{return _processImageWithArucoDetector;}
     std::vector<aruco::Marker> getDetectedMarkers(){return detectedMarkers;}
+    bool isVideo()const;
 public slots:
     void openVideoFile();
     void openImages();
     void setImage(  cv::Mat &img2Show);
     void updateImage();
-    void playNextFrame();
+    bool playNextFrame();
 
 private slots:
     void playPauseButtonClicked( );

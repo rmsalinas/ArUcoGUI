@@ -17,11 +17,8 @@ public:
 
     //used as singleton
     static ArucoGParams & get(){
-
-        static ArucoGParams    instance; // Guaranteed to be destroyed.
-                                         // Instantiated on first use.
-         return instance;
-
+        static ArucoGParams    instance; // Guaranteed to be destroyed.                                         // Instantiated on first use.
+        return instance;
     }
 
     //loads the detector from the params

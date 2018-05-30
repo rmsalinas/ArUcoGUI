@@ -1,7 +1,11 @@
 #include "calibrationcontrolpanel.h"
 #include "ui_calibrationcontrolpanel.h"
+#include "calibrator.h"
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QSettings>
+#include <QFileInfo>
+#include <QFileDialog>
 calibrationControlPanel::calibrationControlPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::calibrationControlPanel)
@@ -44,6 +48,15 @@ void calibrationControlPanel::on_pb_images_clear_clicked()
 
 void calibrationControlPanel::add(const cv::Mat &image,const std::vector<aruco::Marker> &markers,QString info)
 {
+
+    //check image size as the previous ones
+    for(auto &elem:ImagesMarkers){
+        if (image.size()!=elem.image.size()){
+            QMessageBox::critical ( this,tr ( "Error" ),tr ( "Image size differs from previous ones" ));
+            return;
+        }
+    }
+
     //if the image is already, replace it
     for(auto &elem:ImagesMarkers){
         if ( elem.info==info){
@@ -51,6 +64,8 @@ void calibrationControlPanel::add(const cv::Mat &image,const std::vector<aruco::
             return;
         }
     }
+
+
     ui->listWidget->addItem(info);
     ImagesMarkers.push_back( {image.clone(),markers,info});
 
@@ -70,5 +85,48 @@ void calibrationControlPanel::on_listWidget_itemDoubleClicked(QListWidgetItem *i
     shownImage-> setPixmap ( QPixmap::fromImage ( _qimgR.rgbSwapped() ) );
     shownImage->show();
 
+
+}
+aruco::CameraParameters aruco_cameraCalibrate(std::vector<std::vector<aruco::Marker> >  &allMarkers, int imageWidth,int imageHeight,float markerSize,float *currRepjErr);
+
+void calibrationControlPanel::on_pb_compute_clicked()
+{
+    if(ImagesMarkers.size()==0)return;
+
+    std::vector<std::vector<aruco::Marker> >  allMarkers;
+    for(const auto &elem:ImagesMarkers)
+        allMarkers.push_back(elem.markers);
+    float currRepjErr=0;
+      camParams=aruco_cameraCalibrate(allMarkers, ImagesMarkers.front().image.cols,ImagesMarkers.front().image.rows, 1,&currRepjErr);
+    std::stringstream sstr;
+    sstr<<tr("Reprojection Error=").toStdString()<<currRepjErr<<"pix"<<std::endl;
+    ui->pte_results->clear();
+    ui->pte_results->insertPlainText(sstr.str().c_str());
+    std::stringstream sstr2;
+    sstr2<<camParams;
+    ui->pte_results->insertPlainText(sstr2.str().c_str());
+
+
+}
+
+void calibrationControlPanel::on_pb_saveCalibration_clicked()
+{
+    if(!camParams.isValid()) return;
+    QSettings settings;
+    QString filepath = QFileDialog::getSaveFileName(
+                this,
+                tr ( "Select an output file" ),
+                settings.value ( "currDir" ).toString()+"/calibration.yml",
+                tr ( "YALM File (*.yml)" ) );
+    if ( filepath==QString() ) return;
+    settings.setValue ( "currDir",QFileInfo ( filepath ).absolutePath() );
+    QFileInfo qfile(filepath);
+    if (qfile.completeSuffix()!="yml")
+        filepath+=".yml";
+    try{
+        camParams.saveToFile(filepath.toStdString());
+    }catch(std::exception &ex){
+        QMessageBox::critical ( this,tr ( "Error" ),tr ( "Could not save file " )+filepath );
+    }
 
 }

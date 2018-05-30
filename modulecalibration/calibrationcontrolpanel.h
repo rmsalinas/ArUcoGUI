@@ -4,13 +4,14 @@
 #include <QWidget>
 #include <QListWidgetItem>
 #include <QLabel>
+#include <QThread>
 #include "aruco/aruco.h"
 #include <opencv2/core.hpp>
+
 namespace Ui {
 class calibrationControlPanel;
 }
-
-class calibrationControlPanel : public QWidget
+ class calibrationControlPanel : public QWidget
 {
     Q_OBJECT
 
@@ -26,16 +27,24 @@ private slots:
 
     void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
-private:
-    Ui::calibrationControlPanel *ui;
+    void on_pb_compute_clicked();
+
+    void on_pb_saveCalibration_clicked();
+
+ public:
     struct ImageInfo{
       cv::Mat image;
         std::vector<aruco::Marker> markers;
         QString info;
     };
+private:
+    Ui::calibrationControlPanel *ui;
     QLabel *shownImage ;
 
     std::list<ImageInfo> ImagesMarkers;
+    aruco::CameraParameters camParams;
+
 };
+
 
 #endif // CALIBRATIONCONTROLPANEL_H

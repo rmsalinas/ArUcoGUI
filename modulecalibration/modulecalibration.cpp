@@ -1,4 +1,5 @@
 #include <QSplitter>
+#include <QTimer>
 #include "modulecalibration.h"
 #include "moduletools/appparams.h"
 #include <iostream>
@@ -21,11 +22,19 @@ ModuleCalibration::ModuleCalibration() {
     Btn_addCurImage->hide();
     vplayer->addButton(Btn_addCurImage);
 
+
+
     Btn_gotoNextFrame=new QPushButton(tr("&Next Image..."));
     connect(Btn_gotoNextFrame, &QAbstractButton::clicked, vplayer, &VideoPlayer::playNextFrame);
     Btn_gotoNextFrame->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/arrow-right-small.png" )));
     Btn_gotoNextFrame->hide();
     vplayer->addButton(Btn_gotoNextFrame);
+
+    Btn_addAllImages=new QPushButton(tr("&Add All..."));
+    connect(Btn_addAllImages, &QAbstractButton::clicked, this, &ModuleCalibration::on_addAll);
+    Btn_addAllImages->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/done.png" )));
+    Btn_addAllImages->hide();
+    vplayer->addButton(Btn_addAllImages);
 
 
     readParamSet();
@@ -55,11 +64,19 @@ void ModuleCalibration::on_addCurrent(){
 
 void ModuleCalibration::on_addAll(){
 
+    if( vplayer->getDetectedMarkers().size()!=0)
+        CalibPanel->add(vplayer->getShownImage(),vplayer->getDetectedMarkers(),QString("Frame: #")+vplayer->getCurrentImageInfo().c_str() );
+    if(    vplayer->playNextFrame())
+         QTimer::singleShot(10,this,SLOT(on_addAll()));
 }
+
 
 void ModuleCalibration::on_vplayer_opened(){
     Btn_addCurImage->show();
     Btn_gotoNextFrame->show();
+    if(vplayer->isVideo())
+        Btn_addAllImages->hide();
+    else Btn_addAllImages->show();
 }
 
 void ModuleCalibration::on_reset_action(){

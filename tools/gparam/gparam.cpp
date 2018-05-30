@@ -199,11 +199,15 @@ Param & Param::operator= ( bool v ) throw ( gparam::Exception )
     return *this;
 
 }
-Param & Param::operator= ( std::string v ) throw ( gparam::Exception )
+Param & Param::operator= ( const std::string &v ) throw ( gparam::Exception )
 {
     _value=v;
     return *this;
 
+}
+Param & Param::operator= (const char *v ) throw ( gparam::Exception ) {
+    _value=v;
+    return *this;
 }
 
 /**

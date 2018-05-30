@@ -43,6 +43,7 @@ public:
 
 public slots:
     virtual void on_global_action(const gparam::ParamSet &paramset){}
+    virtual void on_module_activated(std::string moduleName,ModuleInfo minfo){}
 
 private slots:
     void on_module_activated(QAction*);

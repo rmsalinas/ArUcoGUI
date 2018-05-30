@@ -179,6 +179,12 @@ void VideoPlayer::addButton(QAbstractButton* btn){
 
 }
 
+bool VideoPlayer::isVideo()const{
+    if(!_reader)return false;
+    if ( dynamic_cast<_VideoPlayer*>( _reader.get())!=0)return true;
+    return false;
+}
+
 void VideoPlayer::openImages()
 {
     QSettings settings;
@@ -263,7 +269,7 @@ void VideoPlayer::playPauseButtonClicked()
     }
 }
 
-void VideoPlayer::playNextFrame(){
+bool VideoPlayer::playNextFrame(){
     bool res=grabAndShow();
 
     if(res && isPlaying)
@@ -272,6 +278,7 @@ void VideoPlayer::playNextFrame(){
         isPlaying=0;
         m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     }
+    return res;
 }
 
 void VideoPlayer::updateImage(){

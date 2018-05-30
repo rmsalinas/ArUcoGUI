@@ -1,6 +1,6 @@
 SET(MODULENAME modulecalibration)
-SET(${MODULENAME}_SRC   modulecalibration.cpp  calibrationcontrolpanel.cpp)
-SET(${MODULENAME}_HDR   modulecalibration.h   modulecalibration_exports.h calibrationcontrolpanel.h)
+SET(${MODULENAME}_SRC   modulecalibration.cpp  calibrationcontrolpanel.cpp calibrator.cpp)
+SET(${MODULENAME}_HDR   modulecalibration.h   modulecalibration_exports.h calibrationcontrolpanel.h calibrator.h)
 SET(${MODULENAME}_UIS  calibrationcontrolpanel.ui)
 
 include_directories(.)

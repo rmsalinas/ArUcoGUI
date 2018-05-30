@@ -53,8 +53,6 @@ ParamSetWdgt::ParamSetWdgt ( const gparam::ParamSet &paramSet,QWidget *parent, Q
     _buttonBox=0;
 
     _buttons=buttons;
-    _layout = new QFormLayout();
-    setLayout ( _layout );
     setParamSet ( paramSet );
 }
 
@@ -62,20 +60,27 @@ ParamSetWdgt::ParamSetWdgt ( gparam::ParamSet *paramSet,QWidget *parent , QDialo
 {
     _buttonBox=0;
     _buttons=buttons;
-    _layout = new QFormLayout();
-    setLayout ( _layout );
     setParamSet ( paramSet );
 }
 ParamSetWdgt::~ParamSetWdgt()
 {
-
-    delete _buttonBox;
-    delete _layout;
+if (_buttonBox)    delete _buttonBox;
+if(_layout)    delete _layout;
 }
 
+void ParamSetWdgt::clear(){
+    for(auto &elm:elements) delete elm;
+    elements.clear();
+    if(_layout) delete _layout;
+    _layout=nullptr;
+}
 
 void ParamSetWdgt::setParamSet ( gparam::ParamSet *paramSet )
 {
+
+    clear();
+    _layout = new QFormLayout();
+    setLayout ( _layout );
  // cout<<"Paramset ="<<paramSet->getPrintString()<<endl;
     _paramSet =  paramSet;
     setWindowTitle ( paramSet->getName().c_str() );
@@ -227,6 +232,7 @@ void ParamSetWdgt::addInteger ( gparam::Param intParam )
     _layout->addRow ( QString::fromStdString ( intParam.getName() ), spinBox );
     spinBox->setObjectName ( QString::fromStdString ( intParam.getName() ) );
     connect ( spinBox, SIGNAL ( valueChanged ( int ) ), this, SLOT ( findSignalSender() ) );
+    elements.push_back(spinBox);
 }
 
 void ParamSetWdgt::addString ( gparam::Param strParam )
@@ -238,6 +244,7 @@ void ParamSetWdgt::addString ( gparam::Param strParam )
     _layout->addRow ( QString::fromStdString ( strParam.getName() ), lineEdit );
     lineEdit->setObjectName ( QString::fromStdString ( strParam.getName() ) );
     connect ( lineEdit, SIGNAL ( textChanged ( QString ) ), this, SLOT ( findSignalSender() ) );
+    elements.push_back(lineEdit);
 }
 
 void ParamSetWdgt::addStringList ( gparam::Param strlistParam )
@@ -253,6 +260,7 @@ void ParamSetWdgt::addStringList ( gparam::Param strlistParam )
     _layout->addRow ( QString::fromStdString ( strlistParam.getName() ), comboBox );
     comboBox->setObjectName ( QString::fromStdString ( strlistParam.getName() ) );
     connect ( comboBox, SIGNAL ( currentIndexChanged ( int ) ), this, SLOT ( findSignalSender() ) );
+    elements.push_back(comboBox);
 }
 
 void ParamSetWdgt::addReal ( gparam::Param realParam )
@@ -279,6 +287,7 @@ void ParamSetWdgt::addReal ( gparam::Param realParam )
     _layout->addRow ( QString::fromStdString ( realParam.getName() ), doublespinBox );
     doublespinBox->setObjectName ( QString::fromStdString ( realParam.getName() ) );
     connect ( doublespinBox, SIGNAL ( valueChanged ( double ) ), this, SLOT ( findSignalSender() ) );
+    elements.push_back(doublespinBox);
 }
 
 void ParamSetWdgt::addBoolean ( gparam::Param boolParam )
@@ -290,6 +299,7 @@ void ParamSetWdgt::addBoolean ( gparam::Param boolParam )
     _layout->addRow ( QString::fromStdString ( boolParam.getName() ), checkBox );
     checkBox->setObjectName ( QString::fromStdString ( boolParam.getName() ) );
     connect ( checkBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( findSignalSender() ) );
+    elements.push_back(checkBox);
 }
 
 void ParamSetWdgt::addFilepath ( gparam::Param filepathParam )
@@ -304,6 +314,7 @@ void ParamSetWdgt::addFilepath ( gparam::Param filepathParam )
     _layout->addRow ( QString::fromStdString ( filepathParam.getName() ), filepathLineEdit );
     filepathLineEdit->setObjectName ( QString::fromStdString ( filepathParam.getName() ) );
     connect ( filepathLineEdit, SIGNAL ( textChanged ( QString ) ), this, SLOT ( findSignalSender() ) );
+    elements.push_back(filepathLineEdit);
 }
 
 

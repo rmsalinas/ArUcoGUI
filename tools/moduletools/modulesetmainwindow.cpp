@@ -88,7 +88,6 @@ void on_global_action_internal(const gparam::ParamSet &paramset);
 void ModuleSetMainWindow::on_module_activated(QAction*action){
     std::string module_name=action->text().toStdString();
     _cur_active_module=module_name;
-    cerr<<"MODULE ACTIVATED: "<<_cur_active_module<<endl;
     //deactivate all but the selected
     for(std::unordered_map<std::string,ModuleInfo>::iterator m= moduleMap.begin();m!=moduleMap.end();m++)
         if (m->first !=module_name)
@@ -96,6 +95,9 @@ void ModuleSetMainWindow::on_module_activated(QAction*action){
     //now, activate the one
     moduleMap[module_name].get()->activate();
     _stckWidget->setCurrentIndex (moduleMap[module_name].getIndex() );
+
+    //call to inform
+    on_module_activated(module_name,moduleMap[module_name]);
 
 
 

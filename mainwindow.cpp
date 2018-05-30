@@ -1,19 +1,16 @@
 #include "mainwindow.h"
-#include "arucogparam.h"
+
 #include <iostream>
 #include "modulearucotest/modulearucotest.h"
 #include "modulecalibration/modulecalibration.h"
 #include "moduletools/appparams.h"
-
+#include "arucogparam.h"
 
 using namespace std;
 
 
-
-
-
 MainWindow::MainWindow ( QWidget *parent  ) :
-ModuleSetMainWindow ( parent )  {
+    ModuleSetMainWindow ( parent )  {
     try {
         setWindowTitle ( "ArUco GUI" );
         setWindowIcon(QIcon ( ":/images/aruco_params.png" ));
@@ -31,22 +28,31 @@ ModuleSetMainWindow ( parent )  {
 
         //ARUCO PARAMS AND DOCK
         AppParams::readFromSettings(ArucoGParams::get());
-        gparam::ParamSetWdgt* _arucoWdgt= new gparam::ParamSetWdgt (&ArucoGParams::get(),0 );
+        _arucoWdgt= new gparam::ParamSetWdgt (&ArucoGParams::get(),0 );
         connect(_arucoWdgt,SIGNAL(paramChanged(int)),this,SLOT(on_ArucoParamsChanged()));
-         _arucoDock=new QDockWidget (  "Aruco Params" );
+        _arucoDock=new QDockWidget (  "Aruco Params" );
         _arucoDock->setWidget (  _arucoWdgt);
         addDockWidget ( Qt::LeftDockWidgetArea, _arucoDock );
 
 
         //ADD MODULES
         addModule ( "ArucoTest", std::make_shared< ModuleArucoTest> () );
-         addModule ( "Calibration", std::make_shared< ModuleCalibration> () );
+        addModule ( "Calibration", std::make_shared< ModuleCalibration> () );
         activateModule("ArucoTest");
     } catch ( std::exception &ex ) {
         cerr<<ex.what() <<endl;
     }
+}
 
-
+void MainWindow::on_module_activated(std::string moduleName,ModuleInfo minfo){
+    cerr<<"Module activated:" <<moduleName<<endl;
+    if (moduleName=="Calibration"){
+        //change detection to ARUCO_MIP_32
+       ArucoGParams::get()["Dictionary"] ="ARUCO_MIP_36h12";
+        //update
+        _arucoWdgt->setParamSet(&ArucoGParams::get());
+        on_ArucoParamsChanged();
+    }
 
 }
 

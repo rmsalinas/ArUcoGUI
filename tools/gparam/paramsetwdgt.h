@@ -54,11 +54,13 @@ private:
 
     void storeChange ( int idx, QObject* obj );
 
+    void clear();
 
-    QFormLayout *_layout;
-    gparam::ParamSet *_paramSet;
+    std::vector<QObject*> elements;
+    QFormLayout *_layout=0;
+    gparam::ParamSet *_paramSet=0;
     gparam::ParamSet internal_paramSet;
-    QDialogButtonBox* _buttonBox;
+    QDialogButtonBox* _buttonBox=0;
     QDialogButtonBox::StandardButtons _buttons;
  signals:
     void paramChanged ( int idx );

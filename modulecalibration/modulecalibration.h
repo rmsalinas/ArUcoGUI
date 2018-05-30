@@ -38,7 +38,7 @@ private slots:
     void on_vplayer_opened();
     void on_addCurrent();
     void on_addAll();
-signals:
+ signals:
     void mesh_generated(std::string);
 private:
     QToolBox *_tbox=0;
@@ -49,7 +49,7 @@ private:
 
     void readParamSet();
 
- QAbstractButton *Btn_addCurImage,*Btn_gotoNextFrame;
+    QAbstractButton *Btn_addCurImage,*Btn_addAllImages,*Btn_gotoNextFrame;
     VideoPlayer *vplayer=0;
     calibrationControlPanel *CalibPanel;
 

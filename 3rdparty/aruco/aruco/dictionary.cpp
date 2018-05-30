@@ -371,9 +371,8 @@ bool Dictionary::isPredefinedDictinaryString(string str)  {
 }
 
 vector<std::string> Dictionary::getDicTypes() {
-return {   "ARUCO","ARUCO_MIP_16h3","ARUCO_MIP_25h7","ARUCO_MIP_36h12", "ARTOOLKITPLUS","ARTOOLKITPLUSBCH","TAG16h5","TAG25h7","TAG25h9"
-    ,"TAG36h11","TAG36h10","CHILITAGS","ALL_DICTS"};
-
+    return {  "ARUCO_MIP_36h12", "ARUCO","ARUCO_MIP_16h3","ARUCO_MIP_25h7", "ARTOOLKITPLUS","ARTOOLKITPLUSBCH","TAG16h5","TAG25h7","TAG25h9"
+        ,"TAG36h11","TAG36h10","CHILITAGS","ALL_DICTS"};
 }
 
 MarkerMap  Dictionary::createMarkerMap( cv::Size gridSize,int MarkerSize,int MarkerDistance, const std::vector<int> &ids,bool chess_board) {

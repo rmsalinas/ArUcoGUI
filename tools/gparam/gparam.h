@@ -94,7 +94,8 @@ public:
     //sets the value to v and the type to BOOLEAN
     Param & operator= ( bool v ) throw ( gparam::Exception ) ;
     //sets the value to v and the type is now changed
-    Param & operator= ( std::string v ) throw ( gparam::Exception ) ;
+    Param & operator= (const std::string &v ) throw ( gparam::Exception ) ;
+    Param & operator= (const char *v ) throw ( gparam::Exception ) ;
 
     //compares two elements (comparion only considers name and value)
     bool operator== ( const Param &p )const;
