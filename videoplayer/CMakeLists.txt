@@ -19,7 +19,7 @@ SET_TARGET_PROPERTIES(${MODULENAME} PROPERTIES 				# create *nix style library v
 
 
 
-TARGET_LINK_LIBRARIES(${MODULENAME}  ${QT_LIBRARIES}  opencv_core opencv_imgproc opencv_highgui aruco)
+TARGET_LINK_LIBRARIES(${MODULENAME}  ${QT_LIBRARIES}  opencv_core opencv_imgproc opencv_highgui aruco gparam)
 
 INSTALL(TARGETS ${MODULENAME}
         RUNTIME DESTINATION bin COMPONENT main			# Install the dll file in bin directory
