@@ -8,7 +8,6 @@
 #include <QTimer>
 #include <QProcess>
 #include "marker_mapper/debug.h"
-#include <dirent.h>
 #include "arucogparam.h"
 #include <opencv2/highgui.hpp>
 using namespace std;

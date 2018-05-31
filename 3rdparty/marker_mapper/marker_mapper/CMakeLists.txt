@@ -31,7 +31,7 @@ SET_TARGET_PROPERTIES(marker_mapper PROPERTIES 				# create *nix style library v
 	OUTPUT_NAME "marker_mapper${PROJECT_DLLVERSION}" 	# avoid conflicts between library and binary target names
 )
 
-TARGET_LINK_LIBRARIES(marker_mapper ${REQUIRED_LIBRARIES} )
+TARGET_LINK_LIBRARIES(marker_mapper aruco opencv_core )
 
 INSTALL(TARGETS marker_mapper
 	RUNTIME DESTINATION bin COMPONENT main			# Install the dll file in bin directory
