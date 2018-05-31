@@ -1,5 +1,6 @@
+#include <QMenuBar>
+#include <QMessageBox>
 #include "mainwindow.h"
-
 #include <iostream>
 #include "modulearucotest/modulearucotest.h"
 #include "modulecalibration/modulecalibration.h"
@@ -7,7 +8,6 @@
 #include "moduletools/appparams.h"
 #include "moduleviewmapper/moduleviewmapper.h"
 #include "arucogparam.h"
-
 using namespace std;
 
 
@@ -40,12 +40,33 @@ MainWindow::MainWindow ( QWidget *parent  ) :
 
         connect(arucoParamsShowAction,&QAction::triggered, _arucoDock,&QDockWidget::setVisible);
 
+
+
+
+
+
+
         //ADD MODULES
         addModule ( "ArucoTest", std::make_shared< ModuleArucoTest> () );
         addModule ( "Calibration", std::make_shared< ModuleCalibration> () );
         addModule ( "Mapper", std::make_shared< ModuleMapper> () );
         addModule ( "Map Viewer", std::make_shared< ModuleViewMapper> () );
+
+
+        //Add menus
+
+        FileMenu = menuBar()->addMenu(tr("&File"));
+        act_openMarkerMap= new QAction(tr("Open &Marker Map"), this);
+        connect(act_openMarkerMap,SIGNAL(triggered(bool)),this,SLOT(onFileOpenMarkerMap()));
+        act_exit= new QAction(tr("&Exit"), this);
+        connect(act_exit,SIGNAL(triggered(bool)),this,SLOT(onExit()));
+
+        FileMenu->addAction(act_openMarkerMap);
+        FileMenu->addAction(act_exit);
+
         activateModule("ArucoTest");
+
+
     } catch ( std::exception &ex ) {
         cerr<<ex.what() <<endl;
     }
@@ -82,6 +103,13 @@ void MainWindow::on_global_action(const gparam::ParamSet &paramset){
         setArucoParamsDockVisible(true);
     if (paramset.getName()=="hideArucoParams")
         setArucoParamsDockVisible(false);
+    if (paramset.getName()=="NewMarkerMapComputed"){
+        getModuleMap() ["Map Viewer"].cast<ModuleViewMapper> ()->setMarkerMap(
+                    getModuleMap() ["Mapper"].cast<ModuleMapper>()->getMarkerMapGenerated()
+                );
+        activateModule("Map Viewer");
+
+    }
 }
 
 void MainWindow::on_ArucoParamsChanged(){
@@ -90,3 +118,30 @@ void MainWindow::on_ArucoParamsChanged(){
 
 }
 
+
+void MainWindow::onFileOpenMarkerMap(){
+    QSettings settings;
+    QString file = QFileDialog::getOpenFileName (
+                this,
+                tr ( "Select an marker map file" ),
+                settings.value ( "currDir" ).toString(),
+                tr ( "Open Marker Map file (*.yml)" ) );
+    if ( file==QString() ) return;
+
+    settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
+    aruco::MarkerMap mmap;
+
+    try{
+        mmap.readFromFile(file.toStdString());
+    }catch(std::exception &ex){
+        QMessageBox::critical ( this,tr ( "Error" ),tr ( "Could not load marker map from file:" )+file);
+        return;
+    }
+    //open the file in the appropriate module
+    getModuleMap() ["Map Viewer"].cast<ModuleViewMapper> ()->setMarkerMap(mmap);
+    activateModule("Map Viewer");
+
+}
+void MainWindow::onExit(){
+
+}

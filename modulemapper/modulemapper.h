@@ -24,27 +24,23 @@ public:
     std::string getName() const {return "Mapper";}
     std::string getToolBoxTitle() const {return "Mapper Parameters";}
 
+    aruco::MarkerMap getMarkerMapGenerated()const{return _mmap;}
 
 public slots:
     void on_global_action(const gparam::ParamSet &paramset);
     void on_activate();
     void on_process();
-    void on_act_View3D_triggered();
-    void show3DView();
-    void showImageViewer();
 
 private slots:
     void on_vplayer_opened();
  private:
 
     aruco::MarkerMap _selectedMarkerMap;
-    QToolBar *_tbar;
-    QStackedWidget *stckWdtgs;
-    QAbstractButton  *Btn_gotoNextFrame;
+      QAbstractButton  *Btn_gotoNextFrame;
     VideoPlayer *vplayer=0;
-    SglViewer *sglviewer=0;
-    QAction *act_View3D;
+     QAction *act_View3D;
     mapperControlPanel *CalibPanel;
+    aruco::MarkerMap _mmap;
 
 };
 

@@ -1,7 +1,7 @@
-SET(MODULENAME moduleviewmapper)
-SET(${MODULENAME}_SRC   moduleviewmapper.cpp )
-SET(${MODULENAME}_HDR   moduleviewmapper.h moduleviewmapper_exports.h mapperscenedrawer.h)
-#SET(${MODULENAME}_UIS  moduleviewmapper.ui)
+SET(MODULENAME moduleexample)
+SET(${MODULENAME}_SRC   moduleexample.cpp )
+SET(${MODULENAME}_HDR   moduleexample.h moduleexample_exports.h)
+#SET(${MODULENAME}_UIS  moduleexample.ui)
 
 include_directories(.)
 QT5_WRAP_UI(${MODULENAME}_MOC_UIS_APP       ${${MODULENAME}_UIS})
@@ -10,7 +10,7 @@ ADD_LIBRARY(${MODULENAME} ${${MODULENAME}_SRC} ${${MODULENAME}_HDR} ${${MODULENA
 qt5_use_modules(${MODULENAME} Widgets)
 
 SET_TARGET_PROPERTIES(${MODULENAME} PROPERTIES 				# create *nix style library versions + symbolic links
-        DEFINE_SYMBOL MODULEVIEWMAPPER_DSO_EXPORTS
+        DEFINE_SYMBOL MODULEEXAMPLE_DSO_EXPORTS
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_SOVERSION}
         CLEAN_DIRECT_OUTPUT 1 					# allow creating static and shared libs without conflicts

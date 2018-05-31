@@ -79,6 +79,7 @@ void ModuleSetMainWindow::addModule ( std::string name, std::shared_ptr<AppModul
     moduleMap.insert ( make_pair ( name, ModuleInfo ( module,_module_centralwidget_idx ) ) );
     moduleMap[name].action=_modules_tb->addAction(module->getIcon(),name.c_str());
     moduleMap[name].action->setCheckable(true);
+
     _modules_actiongroup->addAction(moduleMap[name].action);
 
 }

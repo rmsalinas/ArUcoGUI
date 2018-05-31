@@ -4,18 +4,15 @@
 #include "moduletools/appparams.h"
 #include <iostream>
 #include "arucogparam.h"
-#include "sglviewer/mapperscenedrawer.h"
+#include "moduleviewmapper/mapperscenedrawer.h"
 #include <mapperdialog.h>
 #include <QMessageBox>
 using namespace std;
 ModuleMapper::ModuleMapper() {
+    setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_map.png" ) ));
 
-    stckWdtgs=new QStackedWidget();
-    vplayer=new VideoPlayer();
-    sglviewer=new SglViewer();
-    connect(vplayer,SIGNAL(openedImageOrVideo()),this,SLOT(on_vplayer_opened()));
-    stckWdtgs->addWidget(vplayer);
-    stckWdtgs->addWidget(sglviewer);
+     vplayer=new VideoPlayer();
+     connect(vplayer,SIGNAL(openedImageOrVideo()),this,SLOT(on_vplayer_opened()));
 
 
     Btn_gotoNextFrame=new QPushButton(tr("&Next Image..."));
@@ -29,51 +26,18 @@ ModuleMapper::ModuleMapper() {
 
 
     //register the elements created
-    setCentralWidget(stckWdtgs);
-    setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_map.png" ) ));
+    setCentralWidget(vplayer);
 
 
-    _tbar=new QToolBar("Mapper");
-    act_View3D=  new QAction ( QIcon ( ":/images/icon3d.png" ), tr ( "&Show 3D..." ), this );
-    act_View3D->setCheckable(true);
-    connect(act_View3D,SIGNAL(triggered()),this,SLOT(on_act_View3D_triggered( )));
-    _tbar->addAction(act_View3D);
-    setToolBar(_tbar);
-
-
-   // setToolBar(_tbar);
     CalibPanel=new mapperControlPanel();
      connect(CalibPanel,&mapperControlPanel::process,this,&ModuleMapper::on_process);
     setControlPanel(CalibPanel);
 }
 
-void ModuleMapper::show3DView(){
-    act_View3D->setChecked(true);
-     stckWdtgs->setCurrentIndex(1);
-     getControlPanel()->hide();
-     emit global_action_triggered(gparam::ParamSet("hideArucoParams"));
 
-}
-void ModuleMapper::showImageViewer(){
-    stckWdtgs->setCurrentIndex(0);
-    getControlPanel()->show();
-}
-
-void ModuleMapper::on_act_View3D_triggered( ){
-
-    if (act_View3D->isChecked())
-        show3DView();
-    else
-        showImageViewer();
-
-}
 
 void ModuleMapper::on_activate(){
-    if (stckWdtgs->currentIndex()==1 ){
-         emit global_action_triggered(gparam::ParamSet("hideArucoParams"));
-        getControlPanel()->hide();
 
-    }
 
 }
 
@@ -99,9 +63,9 @@ void ModuleMapper::on_process(){
     auto res=mdlg->exec();
     if (res==QDialog::Accepted){
         CalibPanel->setMarkerMapInfo(mdlg->getMarkerMap());
-         sglviewer->setDrawer(std::make_shared<MapperSceneDrawer>(mdlg->getMarkerMap()));
-        show3DView();
-    }
+        _mmap=mdlg->getMarkerMap();
+        emit global_action_triggered(gparam::ParamSet("NewMarkerMapComputed"));
+     }
 
 }
 

@@ -1,7 +1,7 @@
 #ifndef _MapperSceneDrawer_H
 #define _MapperSceneDrawer_H
-#include "sgl.h" 
-#include "sgldrawer.h"
+#include "sglviewer/sgl.h"
+#include "sglviewer/sgldrawer.h"
 #include "aruco/markermap.h"
 #include <opencv2/imgproc.hpp>
 #include <string>

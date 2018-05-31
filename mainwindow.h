@@ -19,12 +19,16 @@ public slots:
 
 
     void setArucoParamsDockVisible(bool v);
+
+    void onFileOpenMarkerMap();
+    void onExit();
 private :
     QAction *arucoParamsShowAction;
     QToolBar *_tbar;
     QDockWidget *_arucoDock;
     gparam::ParamSetWdgt* _arucoWdgt;
-
+    QMenu *FileMenu;
+    QAction *act_openMarkerMap,*act_exit;
 };
 
 #endif // MAINWINDOW_H
