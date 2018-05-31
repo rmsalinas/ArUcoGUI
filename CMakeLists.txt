@@ -68,7 +68,9 @@ add_subdirectory(sglviewer)
 add_subdirectory(modulecalibration)
 add_subdirectory(modulearucotest)
 add_subdirectory(modulemapper)
-SET(USED_MODULES  modulecalibration modulearucotest modulemapper  )
+add_subdirectory(moduleviewmapper)
+
+SET(USED_MODULES  modulecalibration modulearucotest modulemapper  moduleviewmapper)
 
 
 #   add_subdirectory(qtgl)

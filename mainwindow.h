@@ -12,9 +12,13 @@ public:
 public slots:
     void on_global_action(const gparam::ParamSet &paramset);
     void on_ArucoParamsChanged();
- public slots:
+
+
+public slots:
     void on_module_activated(std::string moduleName,ModuleInfo minfo);
 
+
+    void setArucoParamsDockVisible(bool v);
 private :
     QAction *arucoParamsShowAction;
     QToolBar *_tbar;

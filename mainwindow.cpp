@@ -5,6 +5,7 @@
 #include "modulecalibration/modulecalibration.h"
 #include "modulemapper/modulemapper.h"
 #include "moduletools/appparams.h"
+#include "moduleviewmapper/moduleviewmapper.h"
 #include "arucogparam.h"
 
 using namespace std;
@@ -43,6 +44,7 @@ MainWindow::MainWindow ( QWidget *parent  ) :
         addModule ( "ArucoTest", std::make_shared< ModuleArucoTest> () );
         addModule ( "Calibration", std::make_shared< ModuleCalibration> () );
         addModule ( "Mapper", std::make_shared< ModuleMapper> () );
+        addModule ( "Map Viewer", std::make_shared< ModuleViewMapper> () );
         activateModule("ArucoTest");
     } catch ( std::exception &ex ) {
         cerr<<ex.what() <<endl;
@@ -58,20 +60,28 @@ void MainWindow::on_module_activated(std::string moduleName,ModuleInfo minfo){
         _arucoWdgt->setParamSet(&ArucoGParams::get());
         on_ArucoParamsChanged();
     }
+    if(moduleName=="Map Viewer")
+        setArucoParamsDockVisible(false);
 
 }
 
-void MainWindow::on_global_action(const gparam::ParamSet &paramset){
-    if (paramset.getName()=="showArucoParams"){
+void MainWindow::setArucoParamsDockVisible(bool v)
+{
+    if (v){
         _arucoDock->show();
         arucoParamsShowAction->setChecked(true);
     }
-    if (paramset.getName()=="hideArucoParams"){
+    else{
         _arucoDock->hide();
         arucoParamsShowAction->setChecked(false);
     }
+}
 
-cerr<<paramset<<endl;
+void MainWindow::on_global_action(const gparam::ParamSet &paramset){
+    if (paramset.getName()=="showArucoParams")
+        setArucoParamsDockVisible(true);
+    if (paramset.getName()=="hideArucoParams")
+        setArucoParamsDockVisible(false);
 }
 
 void MainWindow::on_ArucoParamsChanged(){

@@ -37,7 +37,7 @@ ModuleCalibration::ModuleCalibration() {
 
     //register the elements created
     setCentralWidget(vplayer);
-    setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/module-3d.png" ) ));
+    setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_calibration.png" ) ));
    // setToolBar(_tbar);
     CalibPanel=new calibrationControlPanel();
     setControlPanel(CalibPanel);

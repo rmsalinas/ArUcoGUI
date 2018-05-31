@@ -30,7 +30,7 @@ ModuleMapper::ModuleMapper() {
 
     //register the elements created
     setCentralWidget(stckWdtgs);
-    setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/mapper.png" ) ));
+    setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_map.png" ) ));
 
 
     _tbar=new QToolBar("Mapper");

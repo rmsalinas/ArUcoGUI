@@ -61,5 +61,8 @@
         <file>images/mapper.png</file>
         <file>images/exclamation.png</file>
         <file>images/icon3d.png</file>
+        <file>images/aruco_calibration.png</file>
+        <file>images/aruco_map.png</file>
+        <file>images/aruco_visualizer.png</file>
     </qresource>
 </RCC>
