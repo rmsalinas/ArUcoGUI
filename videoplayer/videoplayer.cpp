@@ -23,6 +23,7 @@ public:
     virtual double get(int prop)=0;
     virtual void set(int prop,double val)=0;
     virtual std::string getInfo()const=0;
+    virtual QStringList getSource()=0;
 };
 
 class _ImagePlayer:public VideoImagePlayerBase{
@@ -50,8 +51,10 @@ public:
     int curFile=-1;
     std::string info;
     cv::Mat image;
+    QStringList sources;
     _ImagePlayer(const QStringList &strlist){
         files.clear();
+        sources=strlist;
         //divide by ;
         for(int i=0;i<strlist.size();i++){
             files.push_back( strlist.at(i).toLocal8Bit().constData());
@@ -60,7 +63,7 @@ public:
     }
     virtual bool isOpened()const{return files.size()!=0;}
     virtual bool grab(){
-        if (curFile>=files.size())return false;
+        if (size_t(curFile)>=files.size())return false;
         image=cv::imread(files[curFile]);
         info=files[curFile];
         curFile++;
@@ -75,6 +78,7 @@ public:
         case CV_CAP_PROP_FPS:return 1;break;
         case CV_CAP_PROP_POS_FRAMES:return curFile;break;
         };
+        return 0;
     }
     virtual void set(int prop,double val){
         switch (prop){
@@ -88,16 +92,23 @@ public:
     virtual std::string getInfo()const{
             return info;
     }
+    virtual QStringList getSource(){
+        return sources;
+    }
+
 };
 
 class _VideoPlayer:public VideoImagePlayerBase{
     cv::VideoCapture videoReader;
     QString fpath;
     std::string info;
+    QStringList source;
 public:
 
       _VideoPlayer(const QString & filePath){videoReader.open(filePath.toStdString());
-                                                fpath=QFile(filePath).fileName();}
+                                                fpath=QFile(filePath).fileName();
+                                            source<<filePath;
+                                            }
     virtual bool isOpened()const{return videoReader.isOpened();}
     virtual bool grab(){
           info=QString::number(videoReader.get(CV_CAP_PROP_POS_FRAMES)).toStdString();
@@ -109,6 +120,10 @@ public:
     virtual std::string getInfo()const{
         return info;
     }
+      virtual QStringList getSource(){
+          return  source;
+      }
+
 };
 
 VideoPlayer::VideoPlayer(QWidget *parent)
@@ -173,6 +188,11 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 VideoPlayer::~VideoPlayer()
 {
 }
+QStringList VideoPlayer::getSource()const{
+    if ( !_reader)return{};
+    else return _reader->getSource();
+}
+
 void VideoPlayer::addButton(QAbstractButton* btn){
     controlLayout->addWidget(btn);
     addedButtons.push_back(btn);

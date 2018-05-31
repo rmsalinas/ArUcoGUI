@@ -39,11 +39,22 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
+
+find_package(OpenMP  )
+if (OPENMP_FOUND)
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        add_definitions(-DUSE_OMP)
+ENDIF()
+
 #################################
 # Add modules
 #################################
 ADD_SUBDIRECTORY(3rdparty/aruco/aruco)
 include_directories(3rdparty/aruco)
+include_directories(3rdparty/eigen3)
+ADD_SUBDIRECTORY(3rdparty/marker_mapper/marker_mapper/)
+include_directories(3rdparty/marker_mapper)
 
 include_directories(. ./tools)
 
@@ -52,10 +63,12 @@ SET(BUILD_QT ON)
 add_subdirectory(tools/gparam)
 add_subdirectory(tools/moduletools)
 add_subdirectory(videoplayer)
+add_subdirectory(sglviewer)
 
 add_subdirectory(modulecalibration)
 add_subdirectory(modulearucotest)
-SET(USED_MODULES  modulecalibration modulearucotest  )
+add_subdirectory(modulemapper)
+SET(USED_MODULES  modulecalibration modulearucotest modulemapper  )
 
 
 #   add_subdirectory(qtgl)

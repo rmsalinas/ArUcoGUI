@@ -12,8 +12,7 @@ public:
 public slots:
     void on_global_action(const gparam::ParamSet &paramset);
     void on_ArucoParamsChanged();
-    void on_arucoParamsShowAction_triggered();
-public slots:
+ public slots:
     void on_module_activated(std::string moduleName,ModuleInfo minfo);
 
 private :

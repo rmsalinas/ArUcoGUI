@@ -33,6 +33,7 @@ public:
     bool processImageWithArucoDetector()const{return _processImageWithArucoDetector;}
     std::vector<aruco::Marker> getDetectedMarkers(){return detectedMarkers;}
     bool isVideo()const;
+    QStringList getSource()const;
 public slots:
     void openVideoFile();
     void openImages();

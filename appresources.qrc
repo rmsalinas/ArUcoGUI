@@ -58,5 +58,8 @@
         <file>images/aruco_params.png</file>
         <file>images/blackwhite.png</file>
         <file>images/movie.png</file>
+        <file>images/mapper.png</file>
+        <file>images/exclamation.png</file>
+        <file>images/icon3d.png</file>
     </qresource>
 </RCC>
