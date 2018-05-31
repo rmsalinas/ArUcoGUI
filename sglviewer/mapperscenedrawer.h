@@ -1,27 +1,26 @@
-#ifndef _SGL_OpenCV_VIewer_H
-#define _SGL_OpenCV_VIewer_H
+#ifndef _MapperSceneDrawer_H
+#define _MapperSceneDrawer_H
 #include "sgl.h" 
+#include "sgldrawer.h"
 #include "aruco/markermap.h"
 #include <opencv2/imgproc.hpp>
 #include <string>
 #include <map>
-class MapperSceneDrawer{
+
+
+class MapperSceneDrawer:public SglDrawer{
 
     aruco::MarkerMap _mmap;
     std::map<uint32_t,std::vector<sgl::Point3> > marker_points;
 
 
-    float _f;
-    int _w,_h;
 
+    bool _showNumbers=true;
+    cv::Mat camerPose;
 public:
       sgl::Scene _Scene;
 
-    void setParams(int w,int h,const aruco::MarkerMap &mmap,float f=1.5){
-
-        _f=f;
-        _w=w;
-        _h=h;
+      MapperSceneDrawer(const aruco::MarkerMap &mmap ){
         //set the marker points
         for(auto m:mmap)
                 marker_points[m.id]=getMarkerIdPcd(m,0.5);
@@ -30,13 +29,15 @@ public:
         cam.rotateX(3.1415/2.);
         _Scene.setViewMatrix(cam);
         _mmap=mmap;
-        _Scene.setCameraParams (_f,_w,_h,3);
+        _Scene.setCameraParams (_f,_size.width,_size.height,3);
 
     }
 
+    void setShowNumbers(bool v){_showNumbers=v;}
+    void setCameraPose(const cv::Mat &cp){camerPose=cp;}
 
-    void draw(cv::Mat &image,bool showNumbers,cv::Mat camerPose=cv::Mat()){
-        assert(image.cols==_w && image.rows==_h && image.type()==CV_8UC3);
+    void draw(cv::Mat &image){
+        assert(image.size()==_size  );
 
         auto drawMarker=[](sgl::Scene &Scn, const aruco::Marker3DInfo &m , int width){
             const auto &points= m.points;
@@ -74,7 +75,7 @@ public:
             Scn.drawLine( {-w,h,z}, {w,h,z},color,width);
             Scn.drawLine( {-w,-h,z}, {w,-h,z},color,width);
         };
-        _Scene.setCameraParams (_f,_w,_h,3,image.ptr<uchar>(0));
+        _Scene.setCameraParams (_f,_size.width,_size.height,3,image.ptr<uchar>(0));
 
 
          _Scene.clear(sgl::Color(255,255,255));
@@ -83,7 +84,7 @@ public:
 
         for(auto m:_mmap){
             drawMarker(_Scene,m,1);
-            if(showNumbers) _Scene.drawPoints(marker_points[m.id],{125,0,255},2);
+            if(_showNumbers) _Scene.drawPoints(marker_points[m.id],{125,0,255},2);
         }
 
         //draw camera if it is possible

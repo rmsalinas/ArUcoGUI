@@ -34,6 +34,7 @@ private:
     int _currentSourceIdx;
     aruco::CameraParameters _Camera;
     std::shared_ptr<aruco_mm::MarkerMapper> _mapper;
+    aruco::MarkerMap _mmap;
 };
 
 #endif // MAPPERDIALOG_H

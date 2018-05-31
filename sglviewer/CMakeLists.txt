@@ -1,6 +1,6 @@
 SET(MODULENAME sglviewer)
 SET(${MODULENAME}_SRC   sglviewer.cpp  )
-SET(${MODULENAME}_HDR   sglviewer.h   sglviewer_exports.h mapperscenedrawer.h sgl.h)
+SET(${MODULENAME}_HDR   sglviewer.h   sglviewer_exports.h mapperscenedrawer.h sgl.h sgldrawer.h)
 #SET(${MODULENAME}_UIS  ModuleCalibration.ui)
 
 include_directories(.)

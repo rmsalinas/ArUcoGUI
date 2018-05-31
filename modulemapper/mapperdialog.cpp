@@ -18,8 +18,7 @@ mapperdialog::~mapperdialog()
 }
 
 aruco::MarkerMap mapperdialog::getMarkerMap() {
-    if (_mapper)return _mapper->getMarkerMap();
-    else return aruco::MarkerMap();
+     return _mmap;
 }
 
 void mapperdialog::mapperFromImages(const aruco::CameraParameters &camera,QStringList source,int refMarker,double markerSize)
@@ -37,42 +36,6 @@ void mapperdialog::mapperFromImages(const aruco::CameraParameters &camera,QStrin
     _mapper->getMarkerDetector().setParameters(ArucoMarkerDetector::get().getParameters());
 
     ui->te_info->clear();
-    return;
-//    try{
-
-//        std::string outBaseName="out";
-//    //    AMM->getMarkerDetector().setDetectionMode(aruco::DM_FAST,0.02);
-//        cv::Mat image;
-
-//        int frameidx=0;
-
-//        for(int i=0;i<source.size();i++){
-//             image=cv::imread(source.at(i).toStdString());
-//            if (image.empty())continue;
-//            if( image.rows!=Camera.CamSize.height || image.cols!=Camera.CamSize.width ){
-//                std::cerr<<"wont process THIS image because is not of the dimensions of the camera calibration file provided"<<std::endl;
-//                continue;
-//            }
-//            _mapper-> process( image ,frameidx++);
-//            _mapper-> drawDetectedMarkers ( image,3);
-//        }
-
-//        //finish processing
-
-//        _mapper->optimize();
-////        AMM->saveToFile(outBaseName+".amm");
-//        _mapper->getFrameSet().saveToFile("fset.fset");
-//        _mapper->saveToPcd(outBaseName+".pcd",true);
-//        _mapper->saveFrameSetPosesToFile(outBaseName+".log");
-//        _mapper->getCameraParams().saveToFile(outBaseName+"-cam.yml");
-//        _mapper->getMarkerMap().saveToFile(outBaseName+".yml");
-
-
-
-
-//    }catch(std::exception &ex){
-//        std::cerr<<ex.what()<<std::endl;
-//    }
 }
 void  mapperdialog::showEvent(QShowEvent *event){
     processNextImage();
@@ -138,6 +101,9 @@ void mapperdialog::showOptimizationProgress(){
 
 void mapperdialog::on_mapperdialog_finished(int result)
 {
-    if( !isOptimizing) _mapper=nullptr;
-    std::cerr<<"HERE"<<std::endl;
+    if (!_mapper)return;
+    if( !isOptimizing) {
+        _mmap=_mapper->getMarkerMap();
+        _mapper=nullptr;
+    }
 }

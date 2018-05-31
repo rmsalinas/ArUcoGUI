@@ -37,6 +37,9 @@
       </property>
      </widget>
      <widget class="QPlainTextEdit" name="te_info">
+      <property name="lineWrapMode">
+       <enum>QPlainTextEdit::NoWrap</enum>
+      </property>
       <property name="readOnly">
        <bool>true</bool>
       </property>

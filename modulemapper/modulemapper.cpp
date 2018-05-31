@@ -4,6 +4,7 @@
 #include "moduletools/appparams.h"
 #include <iostream>
 #include "arucogparam.h"
+#include "sglviewer/mapperscenedrawer.h"
 #include <mapperdialog.h>
 #include <QMessageBox>
 using namespace std;
@@ -35,7 +36,7 @@ ModuleMapper::ModuleMapper() {
     _tbar=new QToolBar("Mapper");
     act_View3D=  new QAction ( QIcon ( ":/images/icon3d.png" ), tr ( "&Show 3D..." ), this );
     act_View3D->setCheckable(true);
-    connect(act_View3D,SIGNAL(triggered()),this,SLOT(on_show3D( )));
+    connect(act_View3D,SIGNAL(triggered()),this,SLOT(on_act_View3D_triggered( )));
     _tbar->addAction(act_View3D);
     setToolBar(_tbar);
 
@@ -44,26 +45,27 @@ ModuleMapper::ModuleMapper() {
     CalibPanel=new mapperControlPanel();
      connect(CalibPanel,&mapperControlPanel::process,this,&ModuleMapper::on_process);
     setControlPanel(CalibPanel);
-
 }
 
-void ModuleMapper::on_show3D( ){
+void ModuleMapper::show3DView(){
+    act_View3D->setChecked(true);
+     stckWdtgs->setCurrentIndex(1);
+     getControlPanel()->hide();
+     emit global_action_triggered(gparam::ParamSet("hideArucoParams"));
 
-    if (act_View3D->isChecked()){
-        stckWdtgs->setCurrentIndex(1);
-         getControlPanel()->hide();
-         emit global_action_triggered(gparam::ParamSet("hideArucoParams"));
-    }
-    else{
-        stckWdtgs->setCurrentIndex(0);
-        getControlPanel()->show();
-    }
-//    if (_selectedMarkerMap.size()==0){
-//        act_View3D->setChecked(false);
-//    }
-//    else{
-//        stckWdtgs->setCurrentIndex(1);
-//    }
+}
+void ModuleMapper::showImageViewer(){
+    stckWdtgs->setCurrentIndex(0);
+    getControlPanel()->show();
+}
+
+void ModuleMapper::on_act_View3D_triggered( ){
+
+    if (act_View3D->isChecked())
+        show3DView();
+    else
+        showImageViewer();
+
 }
 
 void ModuleMapper::on_activate(){
@@ -92,16 +94,14 @@ void ModuleMapper::on_process(){
         return;
     }
 
-
     mapperdialog *mdlg=new mapperdialog();
     mdlg->mapperFromImages(Camera,source,CalibPanel->getRefMarker(),CalibPanel->getMarkerSize());
     auto res=mdlg->exec();
     if (res==QDialog::Accepted){
-
+        CalibPanel->setMarkerMapInfo(mdlg->getMarkerMap());
+         sglviewer->setDrawer(std::make_shared<MapperSceneDrawer>(mdlg->getMarkerMap()));
+        show3DView();
     }
-
-    return;
-
 
 }
 

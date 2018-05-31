@@ -5,8 +5,9 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <memory>
 #include "sglviewer_exports.h"
-#include "mapperscenedrawer.h"
+#include "sgldrawer.h"
 
 class APP_SGLVIEWER_TOOLS_API SglViewer : public QLabel
 {
@@ -14,21 +15,16 @@ class APP_SGLVIEWER_TOOLS_API SglViewer : public QLabel
 public:
     SglViewer(QWidget *parent  = nullptr);
 
-
-    void setParams(const aruco::MarkerMap &mmap,int w=1280,int h=960);
+    void setDrawer(std::shared_ptr<SglDrawer> sglrawer );
 public slots:
     void redraw();
 
 private:
 
-    MapperSceneDrawer _drawer;
-    int _w=1280,_h=960;
-    aruco::MarkerMap _mmap;
-    cv::Mat _image;
+     cv::Mat _image;
 
 
-    void	 moveEvent(QMoveEvent *event);
-    void	mouseDoubleClickEvent(QMouseEvent *event);
+    std::shared_ptr<SglDrawer> _sglDrawer;
     void	mouseMoveEvent(QMouseEvent *event);
     void	mousePressEvent(QMouseEvent *event);
     void	mouseReleaseEvent(QMouseEvent *event);

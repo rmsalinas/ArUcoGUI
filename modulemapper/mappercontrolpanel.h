@@ -23,6 +23,7 @@ public:
      QString getCameraPath()const{return cameraParamsPath;}
     int getRefMarker()const;
     double getMarkerSize()const;
+    void setMarkerMapInfo(const aruco::MarkerMap &mm);
 private slots:
 
 
@@ -41,9 +42,8 @@ private slots:
 
 private:
     Ui::mapperControlPanel *ui;
-
    QString cameraParamsPath;
-
+   aruco::MarkerMap _mmap;
  };
 
 

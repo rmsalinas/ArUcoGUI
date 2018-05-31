@@ -29,7 +29,9 @@ public slots:
     void on_global_action(const gparam::ParamSet &paramset);
     void on_activate();
     void on_process();
-    void on_show3D();
+    void on_act_View3D_triggered();
+    void show3DView();
+    void showImageViewer();
 
 private slots:
     void on_vplayer_opened();
