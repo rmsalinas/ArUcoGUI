@@ -7,7 +7,9 @@
 #include <QStyle>
 #include <QSlider>
 #include <QString>
+#include <QAction>
 #include <QFileDialog>
+#include <QScrollBar>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -131,20 +133,32 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 {
 
 
-    //  QVideoWidget *videoWidget = new QVideoWidget;
     imgLabel=new QLabel();
+    imgLabel->setBackgroundRole(QPalette::Base);
+    imgLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imgLabel->setScaledContents(true);
-    imgLabel->setMinimumSize(QSize(640,480));
     imgLabel->setPixmap(QPixmap ( QString:: fromUtf8 ( ":/images/cityoflove.jpg" ) ));
 
-    QAbstractButton *openVideoButton = new QPushButton(tr("Open Video..."));
-    connect(openVideoButton, &QAbstractButton::clicked, this, &VideoPlayer::openVideoFile);
-    openVideoButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/movie.png" )));
+    imgLabel->adjustSize();
+
+    scrollArea= new QScrollArea;
+    scrollArea->setBackgroundRole(QPalette::Dark);
+    scrollArea->setWidget(imgLabel);
+    scrollArea->setWidgetResizable(true);
+
+    _actions.push_back( new QAction ( QIcon ( ":/images/movie.png" ), tr ( "&Open Video..." ), this ));
+    connect(_actions.back(),&QAction::triggered,this,&VideoPlayer::openVideoFile);
 
 
-    QAbstractButton *openImagesButton = new QPushButton(tr("Open Image(s)..."));
-    connect(openImagesButton, &QAbstractButton::clicked, this, &VideoPlayer::openImages);
-    openImagesButton->setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/open.png" )));
+
+
+    _actions.push_back( new QAction ( QIcon ( ":/images/open.png" ), tr ( "&Open Image(s)..." ), this ));
+    connect(_actions.back(),&QAction::triggered,this,&VideoPlayer::openImages);
+
+    _actions.push_back( new QAction ( QIcon ( ":/images/fitToWindow.png" ), tr ( "&Fit..." ), this ));
+    connect(_actions.back(),&QAction::triggered,this,&VideoPlayer::normalSize);
+
+
 
     m_playButton = new QPushButton;
     m_playButton->setEnabled(false);
@@ -157,18 +171,15 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     m_positionSlider->setRange(0, 0);
     std::cerr<<"INF="<<m_positionSlider->singleStep()<<" "<<m_positionSlider->pageStep()<<std::endl;
 
-  //  connect(m_positionSlider, &QAbstractSlider::sliderMoved,this, &VideoPlayer::setPosition);
     connect(m_positionSlider, &QAbstractSlider::sliderReleased,this, &VideoPlayer::sliderReleased);
     connect(m_positionSlider, &QAbstractSlider::valueChanged,this, &VideoPlayer::valueChanged);
 
     m_errorLabel = new QLabel;
     m_errorLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
-   controlLayout = new QHBoxLayout;
+    controlLayout = new QHBoxLayout;
     controlLayout->setMargin(0);
 
-    controlLayout->addWidget(openVideoButton);
-    controlLayout->addWidget(openImagesButton);
     controlLayout->addWidget(m_playButton);
     controlLayout->addWidget(m_positionSlider);
 
@@ -176,7 +187,7 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     m_positionSlider->hide();
 
     QBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(imgLabel);
+    layout->addWidget(scrollArea);
     layout->addLayout(controlLayout);
     layout->addWidget(m_errorLabel);
 
@@ -208,12 +219,13 @@ bool VideoPlayer::isVideo()const{
 
 void VideoPlayer::openImages()
 {
+    scaleFactor=1;
     QSettings settings;
     QStringList files = QFileDialog::getOpenFileNames (
                 this,
                 tr ( "Select one or several images" ),
                 settings.value ( "currDir" ).toString(),
-                tr ( "Open Images (*.jpg *.jpeg *.png *.bmp *.ppm *.pgm)" ) );
+                tr ( "Open Images (*.*)" ) );
     if ( files.size()==0) return;
 
     settings.setValue ( "currDir",QFileInfo ( files.at(0) ).absolutePath() );
@@ -228,6 +240,7 @@ void VideoPlayer::openImages()
 }
 
 void VideoPlayer::openVideoFile(){
+    scaleFactor=1;
     QSettings settings;
     QString file = QFileDialog::getOpenFileName (
                 this,
@@ -361,3 +374,32 @@ void VideoPlayer::setImage(  cv::Mat &img2Show){
     imgLabel-> setPixmap ( QPixmap::fromImage ( _qimgR.rgbSwapped() ) );
 }
 
+void VideoPlayer::scaleImage(double factor)
+{
+    scrollArea->setWidgetResizable(false);
+
+    scaleFactor *= factor;
+    imgLabel->resize(scaleFactor * imgLabel->pixmap()->size());
+    adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
+    adjustScrollBar(scrollArea->verticalScrollBar(), factor);
+
+    //zoomInAct->setEnabled(scaleFactor < 3.0);
+    //zoomOutAct->setEnabled(scaleFactor > 0.333);
+}
+void VideoPlayer::adjustScrollBar(QScrollBar *scrollBar, double factor)
+{
+    scrollBar->setValue(int(factor * scrollBar->value()
+                            + ((factor - 1) * scrollBar->pageStep()/2)));
+}
+void VideoPlayer::normalSize(){
+    scrollArea->setWidgetResizable(true);
+    scaleFactor=1;
+    imgLabel->resize(scaleFactor * imgLabel->pixmap()->size());
+}
+void	VideoPlayer::wheelEvent(QWheelEvent *event){
+    if (event->modifiers()== Qt::CTRL){
+    QPoint numDegrees = event->angleDelta() / 8;
+    scaleImage(1+numDegrees .ry()*0.005);
+    }
+
+}

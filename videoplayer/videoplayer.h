@@ -9,6 +9,7 @@
 #include "videoplayer_exports.h"
 #include <QButtonGroup>
 #include <QBoxLayout>
+#include <QScrollArea>
 #include "aruco/aruco.h"
 
 
@@ -34,12 +35,17 @@ public:
     std::vector<aruco::Marker> getDetectedMarkers(){return detectedMarkers;}
     bool isVideo()const;
     QStringList getSource()const;
+
+
+    std::vector<QAction*> getActions(){return _actions;}
 public slots:
     void openVideoFile();
     void openImages();
     void setImage(  cv::Mat &img2Show);
     void updateImage();
     bool playNextFrame();
+    void scaleImage(double factor);
+    void normalSize();
 
 private slots:
     void playPauseButtonClicked( );
@@ -49,21 +55,30 @@ private slots:
 signals:
     void newImage(cv::Mat &);
     void openedImageOrVideo();
+protected:
+    void wheelEvent(QWheelEvent *event);
+
 private:
     QAbstractButton *m_playButton;
+
+     std::vector<QAction*> _actions;
+
     std::vector<QAbstractButton *> addedButtons;
     QSlider *m_positionSlider;
     QLabel *m_errorLabel;
     cv::Mat imIn,imshown;
     QLabel *imgLabel;
-     QBoxLayout *controlLayout;
+    QBoxLayout *controlLayout;
+    QScrollArea *scrollArea;
     int isPlaying=0;
     std::shared_ptr<VideoImagePlayerBase> _reader;
-
     std::vector<aruco::Marker> detectedMarkers;
     bool _processImageWithArucoDetector=true;
     void prepareForOpenedReader();
     bool grabAndShow();
+    float scaleFactor=1;
+
+    void  adjustScrollBar(QScrollBar *scrollBar, double factor);
 
 }; 
 

@@ -17,6 +17,9 @@ ModuleCalibration::ModuleCalibration() {
     Btn_addCurImage->hide();
     vplayer->addButton(Btn_addCurImage);
 
+    QToolBar *tbar=new QToolBar("Calibration");
+    for(auto a:vplayer->getActions())
+        tbar->addAction(a);
 
 
     Btn_gotoNextFrame=new QPushButton(tr("&Next Image..."));
@@ -38,7 +41,7 @@ ModuleCalibration::ModuleCalibration() {
     //register the elements created
     setCentralWidget(vplayer);
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_calibration.png" ) ));
-   // setToolBar(_tbar);
+    setToolBar(tbar);
     CalibPanel=new calibrationControlPanel();
     setControlPanel(CalibPanel);
 

@@ -155,8 +155,7 @@ aruco::CameraParameters aruco_cameraCalibrate(std::vector<std::vector<aruco::Mar
         vector<cv::Point2f> p2d;
         vector<cv::Point3f> p3d;
         getMarker2d_3d_(p2d, p3d, detected_markers, mmap);
-        for(auto p:p3d)cout<<p<<" ";cout<<endl;
-        if (p3d.size() > 0)
+         if (p3d.size() > 0)
         {
             calib_p2d.push_back(p2d);
             calib_p3d.push_back(p3d);

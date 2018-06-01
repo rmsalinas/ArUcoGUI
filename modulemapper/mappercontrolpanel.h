@@ -24,18 +24,17 @@ public:
     int getRefMarker()const;
     double getMarkerSize()const;
     void setMarkerMapInfo(const aruco::MarkerMap &mm);
+    std::vector<QAction*> getActions(){return actions;}
 private slots:
 
 
 
     void on_pb_compute_clicked();
-
     void on_pb_saveMapper_clicked();
-
     void on_pb_loadCalFile_clicked();
+    void on_pb_loadCalFile_triggered(QAction *arg1);
 
-
- signals:
+  signals:
      void process();
 
  public:
@@ -44,6 +43,7 @@ private:
     Ui::mapperControlPanel *ui;
    QString cameraParamsPath;
    aruco::MarkerMap _mmap;
+   std::vector<QAction*> actions;
  };
 
 

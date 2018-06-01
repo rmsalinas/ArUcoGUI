@@ -24,6 +24,7 @@ public:
     void setMarkerMap(const aruco::MarkerMap &map);
 public slots:
     void on_globalaction(const gparam::ParamSet &paramset);
+    void onFileOpenMarkerMap();
 
 private slots:
 private:

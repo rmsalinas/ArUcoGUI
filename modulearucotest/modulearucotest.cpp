@@ -16,6 +16,10 @@ ModuleArucoTest::ModuleArucoTest() {
     connect(vplayer,SIGNAL(newImage(cv::Mat&)),this,SLOT(on_newVideoImage(cv::Mat&)));
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_params.png" ) ));
     QToolBar *tbar=new QToolBar("Aruco");
+    for(auto a:vplayer->getActions())
+        tbar->addAction(a);
+
+
     act_ShowThresImage=  new QAction ( QIcon ( ":/images/blackwhite.png" ), tr ( "&Show thresholded Image..." ), this );
     act_ShowThresImage->setCheckable(true);
     connect(act_ShowThresImage,SIGNAL(triggered()),this,SLOT(on_act_ShowThresImage_triggered( )));

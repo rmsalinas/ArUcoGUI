@@ -5,6 +5,7 @@
 #include "aruco/aruco.h"
 #include "arucogparam.h"
 #include "marker_mapper/markermapper.h"
+#include <opencv2/highgui.hpp>
 namespace Ui {
 class mapperdialog;
 }
@@ -16,11 +17,14 @@ class mapperdialog : public QDialog
 public:
     explicit mapperdialog(QWidget *parent = 0);
     void mapperFromImages(const aruco::CameraParameters &cp,QStringList source,int refMarker,double markerSize);
+    void mapperFromVideo(const aruco::CameraParameters &cp,QStringList source,int refMarker,double markerSize,int stepVideo);
     aruco::MarkerMap getMarkerMap() ;
  ~mapperdialog();
 public slots:
-    void processNextImage();
+    void processNext();
     void showOptimizationProgress();
+    bool processNext_Image();
+    bool processNext_Video();
    protected:
     void  showEvent(QShowEvent *event);
 
@@ -35,6 +39,10 @@ private:
     aruco::CameraParameters _Camera;
     std::shared_ptr<aruco_mm::MarkerMapper> _mapper;
     aruco::MarkerMap _mmap;
+    int _stepVideo;
+    bool isFromImages=true;
+
+    cv::VideoCapture _videoCap;
 };
 
 #endif // MAPPERDIALOG_H

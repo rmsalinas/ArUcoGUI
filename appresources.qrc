@@ -64,5 +64,6 @@
         <file>images/aruco_calibration.png</file>
         <file>images/aruco_map.png</file>
         <file>images/aruco_visualizer.png</file>
+        <file>images/fitToWindow.png</file>
     </qresource>
 </RCC>

@@ -7,6 +7,7 @@
 #include "moduleviewmapper/mapperscenedrawer.h"
 #include <mapperdialog.h>
 #include <QMessageBox>
+#include <QInputDialog>
 using namespace std;
 ModuleMapper::ModuleMapper() {
     setIcon(QPixmap ( QString:: fromUtf8 ( ":/images/aruco_map.png" ) ));
@@ -22,16 +23,23 @@ ModuleMapper::ModuleMapper() {
     vplayer->addButton(Btn_gotoNextFrame);
 
 
-
-
-
     //register the elements created
     setCentralWidget(vplayer);
-
 
     CalibPanel=new mapperControlPanel();
      connect(CalibPanel,&mapperControlPanel::process,this,&ModuleMapper::on_process);
     setControlPanel(CalibPanel);
+
+
+    QToolBar *tbar=new QToolBar("Mapper");
+    for(auto a:vplayer->getActions())
+        tbar->addAction(a);
+    for(auto a:CalibPanel->getActions())
+        tbar->addAction(a);
+    setToolBar(tbar);
+
+
+
 }
 
 
@@ -59,7 +67,14 @@ void ModuleMapper::on_process(){
     }
 
     mapperdialog *mdlg=new mapperdialog();
-    mdlg->mapperFromImages(Camera,source,CalibPanel->getRefMarker(),CalibPanel->getMarkerSize());
+    if (vplayer->isVideo()){
+        int step=QInputDialog:: getInt(vplayer,  tr("Step size"), tr("Processing the whole video could be time consuming. Select the step size"),  1, 1);
+        mdlg->mapperFromVideo(Camera,source,CalibPanel->getRefMarker(),CalibPanel->getMarkerSize(),step);
+
+    }
+    else
+        mdlg->mapperFromImages(Camera,source,CalibPanel->getRefMarker(),CalibPanel->getMarkerSize());
+
     auto res=mdlg->exec();
     if (res==QDialog::Accepted){
         CalibPanel->setMarkerMapInfo(mdlg->getMarkerMap());

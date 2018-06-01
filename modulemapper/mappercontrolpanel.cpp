@@ -16,7 +16,9 @@ mapperControlPanel::mapperControlPanel(QWidget *parent) :
     ui(new Ui::mapperControlPanel)
 {
     ui->setupUi(this);
- }
+
+
+  }
 
 mapperControlPanel::~mapperControlPanel()
 {
@@ -29,10 +31,11 @@ double mapperControlPanel::getMarkerSize()const{
 }
 
 int mapperControlPanel::getRefMarker()const{
-    int refMarker=-1;
-    if(!ui->cb_refMarker->currentText().isEmpty())
-        refMarker=ui->cb_refMarker->currentText().toInt();
-return refMarker;
+    return -1;
+//    int refMarker=-1;
+//    if(!ui->cb_refMarker->currentText().isEmpty())
+//        refMarker=ui->cb_refMarker->currentText().toInt();
+//return refMarker;
 }
 
 void mapperControlPanel::on_pb_compute_clicked()
@@ -82,7 +85,7 @@ void mapperControlPanel::on_pb_loadCalFile_clicked()
     try{
         camParams.readFromXMLFile(file.toStdString());
     }catch(std::exception &ex){
-        QMessageBox::critical ( this,tr ( "Error" ),tr ( "Could not load file" )+file);
+        QMessageBox::critical ( this,tr ( "Error" ),tr ( "Could not load file:" )+file);
         return;
     }
     ui->warningIcon->hide();
@@ -106,3 +109,8 @@ void mapperControlPanel:: setMarkerMapInfo(const aruco::MarkerMap &mm){
 }
 
 
+
+void mapperControlPanel::on_pb_loadCalFile_triggered(QAction *arg1)
+{
+    on_pb_loadCalFile_clicked();
+}

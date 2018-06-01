@@ -120,26 +120,28 @@ void MainWindow::on_ArucoParamsChanged(){
 
 
 void MainWindow::onFileOpenMarkerMap(){
-    QSettings settings;
-    QString file = QFileDialog::getOpenFileName (
-                this,
-                tr ( "Select an marker map file" ),
-                settings.value ( "currDir" ).toString(),
-                tr ( "Open Marker Map file (*.yml)" ) );
-    if ( file==QString() ) return;
+//    QSettings settings;
+//    QString file = QFileDialog::getOpenFileName (
+//                this,
+//                tr ( "Select an marker map file" ),
+//                settings.value ( "currDir" ).toString(),
+//                tr ( "Open Marker Map file (*.yml)" ) );
+//    if ( file==QString() ) return;
 
-    settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
-    aruco::MarkerMap mmap;
+//    settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
+//    aruco::MarkerMap mmap;
 
-    try{
-        mmap.readFromFile(file.toStdString());
-    }catch(std::exception &ex){
-        QMessageBox::critical ( this,tr ( "Error" ),tr ( "Could not load marker map from file:" )+file);
-        return;
-    }
-    //open the file in the appropriate module
-    getModuleMap() ["Map Viewer"].cast<ModuleViewMapper> ()->setMarkerMap(mmap);
+//    try{
+//        mmap.readFromFile(file.toStdString());
+//    }catch(std::exception &ex){
+//        QMessageBox::critical ( this,tr ( "Error" ),tr ( "Could not load marker map from file:" )+file);
+//        return;
+//    }
+//    //open the file in the appropriate module
     activateModule("Map Viewer");
+
+    getModuleMap() ["Map Viewer"].cast<ModuleViewMapper> ()-> onFileOpenMarkerMap();
+
 
 }
 void MainWindow::onExit(){

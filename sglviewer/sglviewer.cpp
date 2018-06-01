@@ -55,11 +55,11 @@ void	SglViewer::mouseMoveEvent(QMouseEvent *event){
 void	SglViewer::mousePressEvent(QMouseEvent *event){
     if(!_sglDrawer) return;
     if (event->button()== Qt::LeftButton){
-        mouseAction=MA_TRANSLATE;
+        mouseAction=MA_ROTATE;
         prevMousePos=event->windowPos();
     }
     else if( event->button()== Qt::RightButton){
-        mouseAction=MA_ROTATE;
+        mouseAction=MA_TRANSLATE;
         prevMousePos=event->windowPos();
     }
 }
