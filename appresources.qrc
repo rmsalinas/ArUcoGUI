@@ -65,5 +65,8 @@
         <file>images/aruco_map.png</file>
         <file>images/aruco_visualizer.png</file>
         <file>images/fitToWindow.png</file>
+        <file>images/aruco_candidates.png</file>
+        <file>images/zoom-in.png</file>
+        <file>images/zoom-out.png</file>
     </qresource>
 </RCC>

@@ -18,6 +18,7 @@ class QSlider;
 class QLabel;
 class QUrl;
  class VideoImagePlayerBase;
+ class SceneImageViewer2;
 class APP_VIDEOPLAYER_TOOLS_API VideoPlayer : public QWidget
 {
     Q_OBJECT
@@ -38,14 +39,14 @@ public:
 
 
     std::vector<QAction*> getActions(){return _actions;}
+    void showAllCandidates(bool v);
 public slots:
     void openVideoFile();
     void openImages();
     void setImage(  cv::Mat &img2Show);
     void updateImage();
     bool playNextFrame();
-    void scaleImage(double factor);
-    void normalSize();
+
 
 private slots:
     void playPauseButtonClicked( );
@@ -56,7 +57,6 @@ signals:
     void newImage(cv::Mat &);
     void openedImageOrVideo();
 protected:
-    void wheelEvent(QWheelEvent *event);
 
 private:
     QAbstractButton *m_playButton;
@@ -67,7 +67,7 @@ private:
     QSlider *m_positionSlider;
     QLabel *m_errorLabel;
     cv::Mat imIn,imshown;
-    QLabel *imgLabel;
+    SceneImageViewer2 *imageWdgt;
     QBoxLayout *controlLayout;
     QScrollArea *scrollArea;
     int isPlaying=0;
@@ -78,8 +78,8 @@ private:
     bool grabAndShow();
     float scaleFactor=1;
 
-    void  adjustScrollBar(QScrollBar *scrollBar, double factor);
 
+    bool _showAllCandidates=false;
 }; 
 
 #endif

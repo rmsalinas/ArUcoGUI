@@ -28,20 +28,21 @@ public slots:
     void on_global_action(const gparam::ParamSet &paramset);
 
 private slots:
-      void on_newVideoImage(cv::Mat &im);
-      void on_act_ShowThresImage_triggered();
-      void on_clearDetections();
-      void on_saveDetections();
-      void redraw();
+    void on_newVideoImage(cv::Mat &im);
+     void on_clearDetections();
+    void on_saveDetections();
+    void redraw();
+    void on_act_showAllCandidates_triggered();
+    void on_loadCalibrationParams();
 signals:
     void mesh_generated(std::string);
 private:
 
 
     QPlainTextEdit *detectionsLabel;
-    QAction *act_ShowThresImage;
+    QAction *act_ShowThresImage,*actshowAllCandidates,*actLoadCalibFile;
     VideoPlayer *vplayer=0;
-     cv::Mat currImage;
+    cv::Mat currImage;
 
 
 

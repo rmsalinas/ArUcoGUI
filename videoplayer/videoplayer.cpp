@@ -17,6 +17,101 @@
 #include <cstring>
 #include "arucogparam.h"
 
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsView>
+
+class SceneImageViewer2 : public QWidget {
+    QPixmap m_pixmap;
+    QRectF m_rect;
+    QPointF m_reference;
+    QPointF m_delta;
+    qreal m_scale = 1.0;
+    void paintEvent(QPaintEvent *) override {
+        QPainter p{this};
+        p.translate(rect().center());
+        p.scale(m_scale, m_scale);
+        p.translate(m_delta);
+        p.drawPixmap(m_rect.topLeft(), m_pixmap);
+    }
+    void mousePressEvent(QMouseEvent *event) override {
+        m_reference = event->pos();
+        qApp->setOverrideCursor(Qt::ClosedHandCursor);
+        setMouseTracking(true);
+    }
+    void mouseMoveEvent(QMouseEvent *event) override {
+        m_delta += (event->pos() - m_reference) * 1.0/m_scale;
+        m_reference = event->pos();
+        update();
+    }
+    void mouseReleaseEvent(QMouseEvent *) override {
+        qApp->restoreOverrideCursor();
+        setMouseTracking(false);
+    }
+    void	 wheelEvent(QWheelEvent *event){
+        if (event->modifiers()== Qt::CTRL){
+        QPoint numDegrees = event->angleDelta() / 8;
+        scale(1+numDegrees .ry()*0.005);
+        }
+
+    }
+public:
+    void setImage(  cv::Mat &img2Show){
+
+
+        QImage _qimgR ( ( const uchar * ) ( img2Show.ptr<uchar> ( 0 ) ),
+                        img2Show.cols,img2Show.rows, QImage::Format_RGB888 ) ;
+
+        setPixmap ( QPixmap::fromImage ( _qimgR.rgbSwapped() ) );
+    }
+
+    void setPixmap(const QPixmap &pix) {
+        m_pixmap = pix;
+        m_rect = m_pixmap.rect();
+        m_rect.translate(-m_rect.center());
+        update();
+    }
+    void scale(qreal s) {
+        m_scale *= s;
+        update();
+    }
+    QSize sizeHint() const override { return {400, 400}; }
+public slots:
+    void normalSize(){
+        m_scale= 1;
+        update();
+    }
+    void zoomIn(){
+        scale(1.1);
+    }
+    void zoomOut(){
+        scale(1./1.1);
+    }
+
+};
+
+class SceneImageViewer : public QGraphicsView {
+    QGraphicsScene m_scene;
+    QGraphicsPixmapItem m_item;
+public:
+    SceneImageViewer() {
+        setScene(&m_scene);
+        m_scene.addItem(&m_item);
+        setDragMode(QGraphicsView::ScrollHandDrag);
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setResizeAnchor(QGraphicsView::AnchorViewCenter);
+    }
+    void setPixmap(const QPixmap &pixmap) {
+        m_item.setPixmap(pixmap);
+        auto offset = -QRectF(pixmap.rect()).center();
+        m_item.setOffset(offset);
+        setSceneRect(offset.x()*4, offset.y()*4, -offset.x()*8, -offset.y()*8);
+        translate(1, 1);
+    }
+    void scale(qreal s) { QGraphicsView::scale(s, s); }
+    QSize sizeHint() const override { return {400, 400}; }
+};
 class VideoImagePlayerBase{
 public:
      virtual bool isOpened()const=0;
@@ -133,18 +228,21 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 {
 
 
-    imgLabel=new QLabel();
-    imgLabel->setBackgroundRole(QPalette::Base);
-    imgLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    imgLabel->setScaledContents(true);
-    imgLabel->setPixmap(QPixmap ( QString:: fromUtf8 ( ":/images/cityoflove.jpg" ) ));
+//    imageWdgt=new QLabel();
+//    imageWdgt->setBackgroundRole(QPalette::Base);
+//    imageWdgt->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+//    imageWdgt->setScaledContents(true);
+//    imageWdgt->setPixmap(QPixmap ( QString:: fromUtf8 ( ":/images/cityoflove.jpg" ) ));
 
-    imgLabel->adjustSize();
+//    imageWdgt->adjustSize();
 
-    scrollArea= new QScrollArea;
-    scrollArea->setBackgroundRole(QPalette::Dark);
-    scrollArea->setWidget(imgLabel);
-    scrollArea->setWidgetResizable(true);
+//    scrollArea= new QScrollArea;
+//    scrollArea->setBackgroundRole(QPalette::Dark);
+//    scrollArea->setWidget(imageWdgt);
+//    scrollArea->setWidgetResizable(true);
+    //layout->addWidget(scrollArea);
+    imageWdgt=new SceneImageViewer2();
+    imageWdgt->setPixmap(QPixmap ( QString:: fromUtf8 ( ":/images/cityoflove.jpg" ) ));
 
     _actions.push_back( new QAction ( QIcon ( ":/images/movie.png" ), tr ( "&Open Video..." ), this ));
     connect(_actions.back(),&QAction::triggered,this,&VideoPlayer::openVideoFile);
@@ -155,8 +253,15 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     _actions.push_back( new QAction ( QIcon ( ":/images/open.png" ), tr ( "&Open Image(s)..." ), this ));
     connect(_actions.back(),&QAction::triggered,this,&VideoPlayer::openImages);
 
-    _actions.push_back( new QAction ( QIcon ( ":/images/fitToWindow.png" ), tr ( "&Fit..." ), this ));
-    connect(_actions.back(),&QAction::triggered,this,&VideoPlayer::normalSize);
+
+    _actions.push_back( new QAction ( QIcon ( ":/images/zoom-in.png" ), tr ( "Zoon &In..." ), this ));
+    connect(_actions.back(),&QAction::triggered,imageWdgt,&SceneImageViewer2::zoomIn);
+    _actions.push_back( new QAction ( QIcon ( ":/images/zoom-out.png" ), tr ( "Zoon &Out..." ), this ));
+    connect(_actions.back(),&QAction::triggered,imageWdgt,&SceneImageViewer2::zoomOut);
+
+    _actions.push_back( new QAction ( QIcon ( ":/images/fitToWindow.png" ), tr ( "&Fit Image..." ), this ));
+    connect(_actions.back(),&QAction::triggered,imageWdgt,&SceneImageViewer2::normalSize);
+
 
 
 
@@ -169,7 +274,6 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 
     m_positionSlider = new QSlider(Qt::Horizontal);
     m_positionSlider->setRange(0, 0);
-    std::cerr<<"INF="<<m_positionSlider->singleStep()<<" "<<m_positionSlider->pageStep()<<std::endl;
 
     connect(m_positionSlider, &QAbstractSlider::sliderReleased,this, &VideoPlayer::sliderReleased);
     connect(m_positionSlider, &QAbstractSlider::valueChanged,this, &VideoPlayer::valueChanged);
@@ -187,9 +291,13 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     m_positionSlider->hide();
 
     QBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(scrollArea);
+
+
+    layout->addWidget(imageWdgt);
     layout->addLayout(controlLayout);
     layout->addWidget(m_errorLabel);
+
+
 
     setLayout(layout);
 
@@ -316,6 +424,7 @@ bool VideoPlayer::playNextFrame(){
 }
 
 void VideoPlayer::updateImage(){
+
     if (imIn.empty()) return ;
     imIn.copyTo(imshown);
     if (_processImageWithArucoDetector){
@@ -349,57 +458,22 @@ bool VideoPlayer::grabAndShow(){
 }
 
 void VideoPlayer::valueChanged(int value){
-    std::cerr<<"value changed:"<<value<<"\n";
     _reader->set(CV_CAP_PROP_POS_FRAMES,m_positionSlider->value());
     grabAndShow();
 }
 void VideoPlayer::sliderReleased(){
-    std::cerr<<"sliderReleased\n";
 }
 void VideoPlayer::setPosition(int position)
 {
-    std::cerr<<"setPosition\n";
     m_positionSlider->setValue(position);
-   // _reader->set(CV_CAP_PROP_POS_FRAMES,position);
-   // grabAndShow();
 }
 
 
 void VideoPlayer::setImage(  cv::Mat &img2Show){
 
-
-    QImage _qimgR ( ( const uchar * ) ( img2Show.ptr<uchar> ( 0 ) ),
-                    img2Show.cols,img2Show.rows, QImage::Format_RGB888 ) ;
-
-    imgLabel-> setPixmap ( QPixmap::fromImage ( _qimgR.rgbSwapped() ) );
+    imageWdgt-> setImage ( img2Show );
 }
 
-void VideoPlayer::scaleImage(double factor)
-{
-    scrollArea->setWidgetResizable(false);
 
-    scaleFactor *= factor;
-    imgLabel->resize(scaleFactor * imgLabel->pixmap()->size());
-    adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
-    adjustScrollBar(scrollArea->verticalScrollBar(), factor);
 
-    //zoomInAct->setEnabled(scaleFactor < 3.0);
-    //zoomOutAct->setEnabled(scaleFactor > 0.333);
-}
-void VideoPlayer::adjustScrollBar(QScrollBar *scrollBar, double factor)
-{
-    scrollBar->setValue(int(factor * scrollBar->value()
-                            + ((factor - 1) * scrollBar->pageStep()/2)));
-}
-void VideoPlayer::normalSize(){
-    scrollArea->setWidgetResizable(true);
-    scaleFactor=1;
-    imgLabel->resize(scaleFactor * imgLabel->pixmap()->size());
-}
-void	VideoPlayer::wheelEvent(QWheelEvent *event){
-    if (event->modifiers()== Qt::CTRL){
-    QPoint numDegrees = event->angleDelta() / 8;
-    scaleImage(1+numDegrees .ry()*0.005);
-    }
 
-}

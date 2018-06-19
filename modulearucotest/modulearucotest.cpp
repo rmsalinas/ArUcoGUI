@@ -20,10 +20,23 @@ ModuleArucoTest::ModuleArucoTest() {
         tbar->addAction(a);
 
 
+    actLoadCalibFile= new QAction ( QIcon ( ":/images/aruco_calibration.png" ), tr ( "&Load Calibration Params..." ), this );
+     connect(actLoadCalibFile,SIGNAL(triggered()),this,SLOT(on_loadCalibrationParams( )));
+    tbar->addAction(actLoadCalibFile);
+
+
     act_ShowThresImage=  new QAction ( QIcon ( ":/images/blackwhite.png" ), tr ( "&Show thresholded Image..." ), this );
     act_ShowThresImage->setCheckable(true);
-    connect(act_ShowThresImage,SIGNAL(triggered()),this,SLOT(on_act_ShowThresImage_triggered( )));
+    connect(act_ShowThresImage,SIGNAL(triggered()),this,SLOT(redraw( )));
     tbar->addAction(act_ShowThresImage);
+
+
+    actshowAllCandidates=new QAction ( QIcon ( ":/images/aruco_candidates.png" ), tr ( "&Show All Candidates..." ), this );
+    actshowAllCandidates->setCheckable(true);
+    connect(actshowAllCandidates,SIGNAL(triggered()),this,SLOT(redraw()));
+    tbar->addAction(actshowAllCandidates);
+
+
     setCentralWidget(vplayer);
     setToolBar(tbar);
 
@@ -60,6 +73,29 @@ ModuleArucoTest::ModuleArucoTest() {
     setControlPanel(controlPanel);
 
 
+}
+void ModuleArucoTest::on_act_showAllCandidates_triggered(){
+
+}
+
+void ModuleArucoTest::on_loadCalibrationParams(){
+    QSettings settings;
+    QString file = QFileDialog::getOpenFileName (
+                vplayer,
+                tr ( "Select a calibration file" ),
+                settings.value ( "currDir" ).toString(),
+                tr ( "Calibration file (*.yml)" ) );
+    if ( file==QString() ) return;
+
+    settings.setValue ( "currDir",QFileInfo ( file ).absolutePath() );
+    aruco::CameraParameters cam_params;
+
+    try{
+        cam_params.readFromXMLFile(file.toStdString());
+    }catch(std::exception &ex){
+        QMessageBox::critical ( vplayer,tr ( "Error" ),tr ( "Could not load camerea calibration from file:" )+file);
+        return;
+    }
 }
 
 void ModuleArucoTest::on_clearDetections(){
@@ -98,10 +134,26 @@ void ModuleArucoTest::getThresholdedImage(cv::Mat &TCopy){
 }
 
 void ModuleArucoTest::redraw(){
+    auto drawCandidate=[](cv::Mat& in,  std::vector<cv::Point2f> &cand,cv::Scalar color, int lineWidth )
+    {
+
+        if (cand.size()!=4) return;
+        if (lineWidth == -1)  // auto
+            lineWidth = static_cast<int>(std::max(1.f, float(in.cols) / 1000.f));
+        cv::line(in, cand[0], cand[1], color, lineWidth);
+        cv::line(in,cand[1], cand[2], color, lineWidth);
+        cv::line(in, cand[2], cand[3], color, lineWidth);
+        cv::line(in, cand[3], cand[0], color, lineWidth);
+    };
+
+
     if (currImage.empty()) return;
     cv::Mat im2;
     currImage.copyTo(im2);
     auto markers=ArucoMarkerDetector::get().detect(currImage);
+
+
+
     printDetectionsText(markers);
     cv::Mat im2show;
     if (act_ShowThresImage->isChecked()){
@@ -111,6 +163,11 @@ void ModuleArucoTest::redraw(){
         for(auto m:markers) m.draw(im2);
         im2show=im2;
     }
+
+    if (actshowAllCandidates->isChecked())
+        for(auto m:ArucoMarkerDetector::get(false).getCandidates())
+             drawCandidate(im2show,m,cv::Scalar(12,255,123),-1);
+
     vplayer->setImage(im2show);
 }
 
@@ -130,9 +187,7 @@ text+=","+QString::number(markers.size());
         detectionsLabel->insertPlainText(text);
 }
 
-void ModuleArucoTest::on_act_ShowThresImage_triggered(){
-    redraw();
-}
+
 void ModuleArucoTest::on_newVideoImage(cv::Mat &im){
     im.copyTo(currImage);
     auto markers=ArucoMarkerDetector::get().detect(currImage);
